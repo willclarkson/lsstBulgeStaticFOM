@@ -78,8 +78,11 @@ class singleMetric(object):
         # source database
         self.dbFil = dbFil[:]
 
-        # output directory
+        # output directory for temp files
         self.dirOut = dirOut[:]
+
+        # list of output paths
+        self.pathsOut = []
 
         # operatives
         self.canRun = True
@@ -263,8 +266,8 @@ class singleMetric(object):
         tRes[metricName] = metricValues
         
         # I don't trust the 'mask' value. make our own boolean variable. Make our own
-        tRes['gtr0'] = metricValues > 1e-5
-        tRes['finite'] = np.isfinite(metricValues)
+        tRes['%s_gtr0' % (metricName)] = metricValues > 1e-5
+        tRes['%s_finite' % (metricName)] = np.isfinite(metricValues)
         
         # set units as radians
         tRes['ra'].units = u.deg
@@ -272,8 +275,13 @@ class singleMetric(object):
         
         # try writing this to disk
         
-        tRes.write(tableName, format='fits', overwrite=True)
+        pathRes = '%s/%s' % (self.dirOut, tableName)
+
+        tRes.write(pathRes, format='fits', overwrite=True)
         
+        # append this to the list of output paths
+        self.pathsOut.append(pathRes)
+
 # =====
 
 def TestSel(filtr='r'):
@@ -305,7 +313,7 @@ def TestFewMetrics(nside=64):
 
     # list of single-metrics
     listMetrics = []
-    
+
     # For the moment, let's just pass these in
     filtersCrowd = ['r']
     for filt in filtersCrowd:
@@ -339,3 +347,10 @@ def TestFewMetrics(nside=64):
     sP.translateResultsToArrays()
 
     listMetrics.append(sP)
+
+    # list of output paths for results
+    listOutPaths = []
+    for metricObj in listMetrics:
+        listOutPaths.append(metricObj.pathsOut[0])
+
+    print listOutPaths
