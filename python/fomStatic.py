@@ -176,4 +176,4 @@ def TestSel(filtr='u'):
     sM = singleMetric(filters=filtr)
 
 
-    print sM.sql
+    print(sM.sql)
