@@ -25,6 +25,9 @@
 # Saved for later: https://github.com/LSST-nonproject/sims_maf_contrib/blob/master/tutorials/Spatial_Coordinates.ipynb
 
 import os
+import numpy as np
+from astropy.table import Table
+from astropy import units as u
 
 # bring in the LSST pieces
 import lsst.sims.maf.db as db
@@ -40,16 +43,31 @@ class singleMetric(object):
     def __init__(self, dbFil='baseline_v1.4_10yrs.db', filters=['r'], \
                      dayFirst=-1, dayLast=10000, \
                      NSIDE=32, \
-                     metrics=[metrics.CountMetric(col='observationStartMJD')], \
-                     dirOut='testMetric', \
-                     Verbose=True):
+                 #metrics=[metrics.CountMetric(col='observationStartMJD')], \
+                 metrics=[metrics.CrowdingM5Metric(crowding_error=0.05, filtername='r')], \
+                 dirOut='testMetric', \
+                     Verbose=True, \
+                 getFilterFromMetric=True):
 
+        # WATCHOUT - this trusts the user to input sensible arguments
+        # for the metric. If changing the filter for the crowding map,
+        # need to change BOTH the filters and the filter name argument
+        # in the metrics value. Return to this later!
+        
         # control variables
         self.Verbose = Verbose
 
-        # filter for selection
+        # input filter (could be superseded below for consistency)
         self.filters = filters[:]
         
+        # try to get the filter from the zeroth metric?
+        if getFilterFromMetric:
+            if hasattr(metrics[0],'filtername'):
+                foundFilter = metrics[0].filtername
+                if self.Verbose:
+                    print("INFO: using filter passed to metric[0]: %s" % (foundFilter))
+                self.filters = foundFilter[:]
+
         # time selection criteria
         self.dayFirst = dayFirst
         self.dayLast = dayLast
@@ -78,7 +96,7 @@ class singleMetric(object):
         # operations to run on initialization
         self.checkDbReadable()
         self.buildSelString()
-
+        
     def checkDbReadable(self):
 
         """Checks that the database is readable"""
@@ -100,9 +118,19 @@ class singleMetric(object):
         self.sql = '%s and %s' % \
             (self.sql, self.getStringFilters())
 
+    def pithyFilterString(self):
+
+        """Generates single string with all the filters"""
+
+        if isinstance(self.filters, str):
+            return self.filters[:]
+
+        # If we've been given a list of filter strings, return joined.
+        return ''.join(self.filters)
+        
     def getStringFilters(self):
 
-        """Utility - returns selection string for filters"""
+        """Utility - returns selection string for filters."""
 
         strFilter = ''
         if not isinstance(self.filters,list):
@@ -126,20 +154,34 @@ class singleMetric(object):
 
         """Sets up the metric bundle"""
 
+        # 2020-02-09 - slice by spatial coordinates
         # self.slicer = slicers.HealpixSlicer(nside=self.nside, useCache=False)
-        self.slicer = slicers.HealpixSlicer(latCol='galb', lonCol='gall', latLonDeg=False, nside=self.nside)
-
-
+        self.slicer = slicers.HealpixSlicer(latCol='galb', lonCol='gall', latLonDeg=True, nside=self.nside, useCache=False)
+        #self.slicer = slicers.HealpixSlicer(latCol='ditheredDec', lonCol='ditheredRA', latLonDeg=False, nside=self.nside, useCache=False)
+        
         self.bundleList=[]
-        for iMetric in range(len(metrics)):
+        self.outNPZlist=[]
+        self.outBundNames=[]
+        for iMetric in range(len(self.metrics)):
             thisMetric = None
             thisMetric = self.metrics[iMetric]
-            thisBundle = metricBundles.metricBundle(\
-                metric, self.slicer, self.sql)
-        
+            thisBundle=metricBundles.MetricBundle(thisMetric,self.slicer,self.sql)
+
+            # find or generate names we'll need later
+            thisName=thisBundle.metric.name.replace(" ","_")
+            thisName = '%s_%s' % (thisName, self.pithyFilterString())
+            
+            #print("INFO: this Metric Name:",thisName)
+            #print("INFO:", thisBundle.fileRoot)
+            
+            self.outNPZlist.append('%s/%s.npz' % (self.dirOut, thisBundle.fileRoot))
+            self.outBundNames.append(thisName)
+            # generate output file path for the .npz file out of this
+            
+            
             self.bundleList.append(thisBundle)
 
-        self.bundleDict = metricBundles.makeBundlesDict(self.bundleList)
+        self.bundleDict = metricBundles.makeBundlesDictFromList(self.bundleList)
 
     def setupGroupAndRun(self):
 
@@ -152,28 +194,97 @@ class singleMetric(object):
         
         # set up the database connection, ensure the output
         # destination exists
-        opsdb = self.db.OpsimDatabase(self.db)
+        opsdb = db.OpsimDatabase(self.dbFil)
         self.ensureOutdirExists()        
         self.resultsDb = db.ResultsDb(outDir=self.dirOut)
 
-        bgroup = metricBundles.MetricBundleGroup(\
+        self.bgroup = metricBundles.MetricBundleGroup(\
             self.bundleDict, opsdb, \
                 outDir=self.dirOut, resultsDb=self.resultsDb)
        
-        bgroup.runAll()
- 
+        self.bgroup.runAll()
+        
     def ensureOutdirExists(self):
 
         """Utility: ensures output directory exists"""
-        
-        if not os.access(self.outDir, os.R_OK):
-            os.makedirs(self.outDir)
 
+        if len(self.dirOut) < 3:
+            self.dirOut='testOut'
+            if self.Verbose:
+                print("ensureOutdirExists INFO - refusing to use <3 char output directory.")
+                print("ensureOutdirExists INFO - defaulted to %s" % (self.dirOut))
+        
+        if not os.access(self.dirOut, os.R_OK):
+            os.makedirs(self.dirOut)
+
+    def translateResultsToArrays(self):
+
+        """Utility - translates the .npz output to a flatter format"""
+
+        print("translateResults INFO - output %s" % (self.resultsDb))
+
+        print(self.outNPZlist)
+
+        self.loadMetricValues(self.outNPZlist[0], "test_%s.fits" % (self.outBundNames[0]), \
+                              self.outBundNames[0])
+        
+    def loadMetricValues(self, pathIn='BLAH', tableName='TEST.fits', metricName='metricValues'):
+
+        """Loads the metric values into memory"""
+
+        if not os.access(pathIn, os.R_OK):
+            if self.Verbose:
+                print("loadMetricValues WARN - cannot read input path %s" % (pathIn))
+            return
+
+        metricValues = None
+        slicePoints = None
+        sliceMask = None
+        
+        with np.load(pathIn) as resNPZ:
+            metricValues = resNPZ.f.metricValues
+            slicePoints = resNPZ.f.slicePoints.item()
+            sliceMask = resNPZ.f.mask
+            
+        # I'm open to suggestions for how to do this more
+        # nicely... For the moment, let's use an astropy table.
+        tRes = Table()
+
+        # 2020-02-09 WIC - these 'ra' and 'dec' might actually already be [l,b]...
+        
+        tRes['sid'] = slicePoints['sid']
+        tRes['ra'] = np.degrees(slicePoints['ra'])
+        tRes['dec'] = np.degrees(slicePoints['dec'])
+        # tRes['metricValues'] = metricValues
+        tRes[metricName] = metricValues
+        
+        # I don't trust the 'mask' value. make our own boolean variable. Make our own
+        tRes['gtr0'] = metricValues > 1e-5
+        tRes['finite'] = np.isfinite(metricValues)
+        
+        # set units as radians
+        tRes['ra'].units = u.deg
+        tRes['dec'].units = u.deg
+        
+        # try writing this to disk
+        
+        tRes.write(tableName, format='fits', overwrite=True)
+        
 # =====
 
-def TestSel(filtr='u'):
+def TestSel(filtr='r'):
 
-    sM = singleMetric(filters=filtr)
+    """Test the runthru metric"""
 
-
+    # doesn't work on any filters other than r...
+    
+    metric = metrics.CrowdingM5Metric(crowding_error=0.05,filtername='%s' % (filtr))
+    
+    sM = singleMetric(metrics=[metric])
     print(sM.sql)
+
+    sM.setupBundleDict()
+    sM.setupGroupAndRun()
+
+    sM.translateResultsToArrays()
+
