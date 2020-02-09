@@ -353,4 +353,4 @@ def TestFewMetrics(nside=64):
     for metricObj in listMetrics:
         listOutPaths.append(metricObj.pathsOut[0])
 
-    print listOutPaths
+    print(listOutPaths)
