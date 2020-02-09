@@ -159,6 +159,9 @@ class singleMetric(object):
         self.slicer = slicers.HealpixSlicer(latCol='galb', lonCol='gall', latLonDeg=True, nside=self.nside, useCache=False)
         #self.slicer = slicers.HealpixSlicer(latCol='ditheredDec', lonCol='ditheredRA', latLonDeg=False, nside=self.nside, useCache=False)
         
+        # (For reference, here is the spatial slicer MAF tutorial:)
+        # https://github.com/LSST-nonproject/sims_maf_contrib/blob/master/tutorials/Spatial_Coordinates.ipynb
+
         self.bundleList=[]
         self.outNPZlist=[]
         self.outBundNames=[]
@@ -174,7 +177,8 @@ class singleMetric(object):
             #print("INFO: this Metric Name:",thisName)
             #print("INFO:", thisBundle.fileRoot)
             
-            self.outNPZlist.append('%s/%s.npz' % (self.dirOut, thisBundle.fileRoot))
+            self.outNPZlist.append('%s/%s.npz' % \
+                                       (self.dirOut, thisBundle.fileRoot))
             self.outBundNames.append(thisName)
             # generate output file path for the .npz file out of this
             
@@ -285,6 +289,51 @@ def TestSel(filtr='r'):
 
     sM.setupBundleDict()
     sM.setupGroupAndRun()
-
     sM.translateResultsToArrays()
 
+
+def TestFewMetrics(nside=64):
+
+    """Test routine to test a few metrics with different
+    selections."""
+
+    # use the same dbfile throughout
+    dbFil='baseline_v1.4_10yrs.db'
+
+    nightMaxCrowd = 365
+    nightMaxPropm = 1e4
+
+    # list of single-metrics
+    listMetrics = []
+    
+    # For the moment, let's just pass these in
+    filtersCrowd = ['r']
+    for filt in filtersCrowd:
+        metricThis = metrics.CrowdingM5Metric(crowding_error=0.05, \
+                                                  filtername=filt)
+
+        sM = singleMetric(metrics=[metricThis], nightMax=nightMaxCrowd, \
+                              NSIDE=nside, dbFil=dbFil, \
+                              getFilterFromMetric=True)
+    
+        sM.setupBundleDict()
+        sM.setupGroupAndRun()
+        sM.translateResultsToArrays()
+
+        listMetrics.append(sM)
+
+    # Now do the proper motion metric
+
+    metricPropmI = metrics.ProperMotionMetric
+    filterPropmI = 'i'
+    nightMaxI = 1e4
+
+    sP = singleMetric(metrics=[metricPropmI], nightMax=nightMaxPropm, \
+                          NSIDE=nside, dbFil=dbFil, \
+                          getFilterFromMetric=False)
+
+    sP.setupBundleDict()
+    sP.setupGroupAndRun()
+    sP.translateResultsToArrays()
+
+    listMetrics.append(sP)
