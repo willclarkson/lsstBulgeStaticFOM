@@ -37,7 +37,7 @@ class singleMetric(object):
 
     """Single metric (might be a metric bundle)"""
 
-    def __init__(self, dbFil='sourceDatabase.db', filters=['u'], \
+    def __init__(self, dbFil='baseline_v1.4_10yrs.db', filters=['r'], \
                      dayFirst=-1, dayLast=10000, \
                      NSIDE=32, \
                      metrics=[metrics.CountMetric(col='observationStartMJD')], \
