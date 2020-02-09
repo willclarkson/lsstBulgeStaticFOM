@@ -26,7 +26,7 @@
 
 import os
 import numpy as np
-from astropy.table import Table
+from astropy.table import Table, join
 from astropy import units as u
 
 # bring in the LSST pieces
@@ -353,4 +353,25 @@ def TestFewMetrics(nside=64):
     for metricObj in listMetrics:
         listOutPaths.append(metricObj.pathsOut[0])
 
-    print(listOutPaths)
+    # now join the tables together
+    mergeTables(listOutPaths)
+
+def mergeTables(paths=[], pathJoined'./TEST_joined.fits'):
+
+    """Merges tables specified one per file. Written for use on tables
+    built from exactly the same spatial slice."""
+        
+    tJoined = Table()
+    if len(paths) < 1:
+        return
+
+    # read the first one in to start the joined table
+    tJoined = Table.read(paths[0])
+    for iTable in range(1, len(paths)):
+        tThis = Table.read(paths[iTable])
+        tJoined = join(tJoined, tThis)
+        
+
+    # write the joined table to disk
+    tJoined.write(pathJoined, overwrite=True)
+        
