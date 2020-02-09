@@ -41,7 +41,7 @@ class singleMetric(object):
     """Single metric (might be a metric bundle)"""
 
     def __init__(self, dbFil='baseline_v1.4_10yrs.db', filters=['r'], \
-                     dayFirst=-1, dayLast=10000, \
+                     dayFirst=-1, nightMax=10000, \
                      NSIDE=32, \
                  #metrics=[metrics.CountMetric(col='observationStartMJD')], \
                  metrics=[metrics.CrowdingM5Metric(crowding_error=0.05, filtername='r')], \
@@ -70,7 +70,7 @@ class singleMetric(object):
 
         # time selection criteria
         self.dayFirst = dayFirst
-        self.dayLast = dayLast
+        self.nightMax = nightMax
 
         # nside for the healpix
         self.nside = NSIDE
@@ -112,7 +112,7 @@ class singleMetric(object):
         """Builds the selection string for the metric"""
 
         self.sql='night > %i and night < %i' % \
-            (self.dayFirst, self.dayLast)
+            (self.dayFirst, self.nightMax)
 
         # add on the filter string
         self.sql = '%s and %s' % \
@@ -312,7 +312,8 @@ def TestFewMetrics(nside=64):
         metricThis = metrics.CrowdingM5Metric(crowding_error=0.05, \
                                                   filtername=filt)
 
-        sM = singleMetric(metrics=[metricThis], nightMax=nightMaxCrowd, \
+        sM = singleMetric(metrics=[metricThis], \
+                              nightMax=nightMaxCrowd, \
                               NSIDE=nside, dbFil=dbFil, \
                               getFilterFromMetric=True)
     
