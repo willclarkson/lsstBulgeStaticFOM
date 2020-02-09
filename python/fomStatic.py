@@ -356,7 +356,7 @@ def TestFewMetrics(nside=64):
     # now join the tables together
     mergeTables(listOutPaths)
 
-def mergeTables(paths=[], pathJoined'./TEST_joined.fits'):
+def mergeTables(paths=[], pathJoined='./TEST_joined.fits'):
 
     """Merges tables specified one per file. Written for use on tables
     built from exactly the same spatial slice."""
