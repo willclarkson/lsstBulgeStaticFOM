@@ -331,7 +331,8 @@ def TestFewMetrics(nside=64):
 
     sP = singleMetric(metrics=[metricPropmI], nightMax=nightMaxPropm, \
                           NSIDE=nside, dbFil=dbFil, \
-                          getFilterFromMetric=False)
+                          getFilterFromMetric=False, \
+                          filters=[filterPropmI])
 
     sP.setupBundleDict()
     sP.setupGroupAndRun()
