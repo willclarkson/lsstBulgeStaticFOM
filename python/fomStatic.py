@@ -325,7 +325,7 @@ def TestFewMetrics(nside=64):
 
     # Now do the proper motion metric
 
-    metricPropmI = metrics.ProperMotionMetric
+    metricPropmI = metrics.ProperMotionMetric()
     filterPropmI = 'i'
     nightMaxI = 1e4
 
