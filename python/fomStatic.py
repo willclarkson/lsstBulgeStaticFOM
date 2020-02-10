@@ -8,9 +8,11 @@
 
 # Pseudo:
 #
-# For each filter, the 5-sigma depth is computed. The i-band PM metric
-# is computed. Then the output is sent to a 2D table for comparison to
-# an external table (e.g. a new reddening map).
+# For each filter, the 5-sigma depth is computed (the standard
+# "CrowdingM5Metric" is used). The i-band PM metric is computed. The
+# result is one table per metric. These tables are then joined into a
+# single 2D table for comparison with external tables (like a map of
+# MSTO apparent magnitude predictions.)
 
 # NOTE - the computation of each data selection separately is handled
 # here in python rather than within sims_maf to be more transparent.
@@ -19,10 +21,6 @@
 # selectors to be used for each bundle, which might be another way to
 # implement a diverse set of metrics in a single bundle.)
 
-# 2020-02-09 - test this only with the M5Metric since I don't have the
-# crowding metric on my laptop atm...
-
-# Saved for later: https://github.com/LSST-nonproject/sims_maf_contrib/blob/master/tutorials/Spatial_Coordinates.ipynb
 
 import os
 import numpy as np
