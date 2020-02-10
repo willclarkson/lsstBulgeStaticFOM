@@ -44,7 +44,7 @@ class singleMetric(object):
                      dayFirst=-1, nightMax=10000, \
                      NSIDE=32, \
                  #metrics=[metrics.CountMetric(col='observationStartMJD')], \
-                 metrics=[metrics.CrowdingM5Metric(crowding_error=0.05, filtername='r')], \
+                 metrics=[metrics.CrowdingM5Metric(crowding_error=0.05, filtername='r', maps=['TrilegalDensityMap']) ], \
                  dirOut='testMetric', \
                      Verbose=True, \
                  getFilterFromMetric=True):
