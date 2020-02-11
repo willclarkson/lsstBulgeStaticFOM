@@ -40,12 +40,12 @@ class singleMetric(object):
 
     def __init__(self, dbFil='baseline_v1.4_10yrs.db', filters=['r'], \
                      dayFirst=-1, nightMax=10000, \
-                     NSIDE=32, \
+                     NSIDE=64, \
                  #metrics=[metrics.CountMetric(col='observationStartMJD')], \
                  metrics=[metrics.CrowdingM5Metric(crowding_error=0.05, filtername='r', maps=['TrilegalDensityMap']) ], \
                  dirOut='testMetric', \
                      Verbose=True, \
-                 getFilterFromMetric=True):
+                 getFilterFromMetric=True, ):
 
         # WATCHOUT - this trusts the user to input sensible arguments
         # for the metric. If changing the filter for the crowding map,
@@ -163,18 +163,28 @@ class singleMetric(object):
         # (For reference, here is the spatial slicer MAF tutorial:)
         # https://github.com/LSST-nonproject/sims_maf_contrib/blob/master/tutorials/Spatial_Coordinates.ipynb
 
+        # sets the map for a given filter
+        filtername = self.pithyFilterString()
+        mapsList = [maps.TrilegalDensityMap(filtername=filtername, nside=self.nside)]
+        
         self.bundleList=[]
         self.outNPZlist=[]
         self.outBundNames=[]
         for iMetric in range(len(self.metrics)):
             thisMetric = None
             thisMetric = self.metrics[iMetric]
-            thisBundle=metricBundles.MetricBundle(thisMetric,self.slicer,self.sql)
-
-            # find or generate names we'll need later
-            thisName=thisBundle.metric.name.replace(" ","_")
-            thisName = '%s_%s' % (thisName, self.pithyFilterString())
             
+            # find or generate names we'll need later                                                                                    
+            thisName=thisMetric.name.replace(" ","_")
+            thisName = '%s_%s' % (thisName, filtername)
+
+            # If we're not doing the crowding metric, we don't need the maps. This is maybe a bit clunky...
+            mapsListUse = mapsList[:]
+            if thisName.find('rowd') < 0:
+                mapsListUse = []
+                
+            thisBundle=metricBundles.MetricBundle(thisMetric,self.slicer,self.sql, mapsList=mapsList)
+
             #print("INFO: this Metric Name:",thisName)
             #print("INFO:", thisBundle.fileRoot)
             
@@ -283,14 +293,16 @@ class singleMetric(object):
 
 # =====
 
-def TestSel(filtr='r'):
+def TestSel(filtr='r', nside=64):
 
     """Test the runthru metric"""
 
-    # doesn't work on any filters other than r...
+    # 2020-02-10 - updated with Peter Yoachim's help: sets the crowding metric for the given filter.
+    # mapsList = [maps.TrilegalDensityMap(filtername=filtr, nside=nside)]
+    metric = metrics.CrowdingM5Metric(crowding_error=0.05, filtername=filtr, maps=[])
     
-    metric = metrics.CrowdingM5Metric(crowding_error=0.05,filtername='%s' % (filtr))
-    
+    #metric = metrics.CrowdingM5Metric(crowding_error=0.05,filtername='%s' % (filtr))
+
     sM = singleMetric(metrics=[metric])
     print(sM.sql)
 
@@ -313,12 +325,23 @@ def TestFewMetrics(nside=64):
     # list of single-metrics
     listMetrics = []
 
+    if nside < 64:
+        print("TestFewMetrics WARN - maps won't work for nside < 64")
+        return
+    
     # For the moment, let's just pass these in
     filtersCrowd = ['r']
-    for filt in filtersCrowd:
-        metricThis = metrics.CrowdingM5Metric(crowding_error=0.05, \
-                                                  filtername=filt)
 
+    filtersCrowd = ['u','g','r','i','z','y']
+    
+    for filt in filtersCrowd:
+#        metricThis = metrics.CrowdingM5Metric(crowding_error=0.05, \
+#                                                  filtername=filt)
+
+        metricThis = metrics.CrowdingM5Metric(crowding_error=0.05, \
+                                              filtername=filt, maps=[])
+
+        
         sM = singleMetric(metrics=[metricThis], \
                               nightMax=nightMaxCrowd, \
                               NSIDE=nside, dbFil=dbFil, \
