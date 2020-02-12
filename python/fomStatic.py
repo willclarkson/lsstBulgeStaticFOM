@@ -33,6 +33,7 @@ import lsst.sims.maf.metrics as metrics
 import lsst.sims.maf.slicers as slicers
 import lsst.sims.maf.metricBundles as metricBundles
 import lsst.sims.maf.maps as maps
+import lsst.sims.maf.plots as plots
 
 class singleMetric(object):
 
@@ -45,7 +46,7 @@ class singleMetric(object):
                  metrics=[metrics.CrowdingM5Metric(crowding_error=0.05, filtername='r', maps=['TrilegalDensityMap']) ], \
                  dirOut='testMetric', \
                      Verbose=True, \
-                 getFilterFromMetric=True, ):
+                 getFilterFromMetric=True):
 
         # WATCHOUT - this trusts the user to input sensible arguments
         # for the metric. If changing the filter for the crowding map,
@@ -156,8 +157,9 @@ class singleMetric(object):
         """Sets up the metric bundle"""
 
         # 2020-02-09 - slice by spatial coordinates
-        # self.slicer = slicers.HealpixSlicer(nside=self.nside, useCache=False)
-        self.slicer = slicers.HealpixSlicer(latCol='galb', lonCol='gall', latLonDeg=True, nside=self.nside, useCache=False)
+        self.slicer = slicers.HealpixSlicer(nside=self.nside, useCache=False)
+        ##self.slicer = slicers.HealpixSlicer(latCol='galb', lonCol='gall', \
+        ##                                    latLonDeg=False, nside=self.nside, useCache=False)
         #self.slicer = slicers.HealpixSlicer(latCol='ditheredDec', lonCol='ditheredRA', latLonDeg=False, nside=self.nside, useCache=False)
         
         # (For reference, here is the spatial slicer MAF tutorial:)
@@ -166,6 +168,9 @@ class singleMetric(object):
         # sets the map for a given filter
         filtername = self.pithyFilterString()
         mapsList = [maps.TrilegalDensityMap(filtername=filtername, nside=self.nside)]
+
+        # 2020-02-11 cargo-cult copy to try to get this to plot galL, galB
+        plotFuncs = [plots.HealpixSkyMap()]
         
         self.bundleList=[]
         self.outNPZlist=[]
@@ -182,9 +187,11 @@ class singleMetric(object):
             mapsListUse = mapsList[:]
             if thisName.find('rowd') < 0:
                 mapsListUse = []
-                
-            thisBundle=metricBundles.MetricBundle(thisMetric,self.slicer,self.sql, mapsList=mapsList)
 
+            thisBundle=metricBundles.MetricBundle(thisMetric,self.slicer,self.sql, \
+                                                  mapsList=mapsListUse, plotFuncs=plotFuncs)
+                
+                
             #print("INFO: this Metric Name:",thisName)
             #print("INFO:", thisBundle.fileRoot)
             
@@ -218,6 +225,7 @@ class singleMetric(object):
                 outDir=self.dirOut, resultsDb=self.resultsDb)
        
         self.bgroup.runAll()
+        self.bgroup.plotAll()
         
     def ensureOutdirExists(self):
 
@@ -311,16 +319,14 @@ def TestSel(filtr='r', nside=64):
     sM.translateResultsToArrays()
 
 
-def TestFewMetrics(nside=64):
+def TestFewMetrics(nside=128, nightMaxCrowd=365, nightMaxPropm=1e4, \
+                   dbFil='baseline_v1.4_10yrs.db'):
 
     """Test routine to test a few metrics with different
     selections."""
 
     # use the same dbfile throughout
-    dbFil='baseline_v1.4_10yrs.db'
-
-    nightMaxCrowd = 365
-    nightMaxPropm = 1e4
+    # dbFil='baseline_v1.4_10yrs.db'
 
     # list of single-metrics
     listMetrics = []
@@ -357,7 +363,6 @@ def TestFewMetrics(nside=64):
 
     metricPropmI = metrics.ProperMotionMetric()
     filterPropmI = 'i'
-    nightMaxI = 1e4
 
     sP = singleMetric(metrics=[metricPropmI], nightMax=nightMaxPropm, \
                           NSIDE=nside, dbFil=dbFil, \
