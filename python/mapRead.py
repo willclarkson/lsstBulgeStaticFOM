@@ -267,6 +267,8 @@ class MapPair(object):
         self.objPoints = pointSet(pathPoints, assignHealpix=False, \
                                       Verbose=self.Verbose)
 
+        print("mapPair INFO - reading file %s" % (pathPoints))
+
         # path to write the output file
         self.pathJoined = pathJoined[:]
 
@@ -378,7 +380,7 @@ def testLoadTable(tablTest='TEST_joined_radec.fits', \
 
     print(OPSIM.tMap)
 
-def testPair(nneib=False):
+def testPair(nneib=False, fullVVV=False):
 
     """Tests loading the pair of maps"""
 
@@ -386,6 +388,11 @@ def testPair(nneib=False):
     if nneib:
         pathOut = 'TEST_interp_joined_nneib.fits'
 
-    mp = MapPair(nearestNeighbor=nneib, pathJoined=pathOut)
+    pathVVV = 'lb_MSTO_ugriz_cutbm2.fits'
+    if fullVVV:
+        pathVVV = 'lb_MSTO_ugriz.fits'
+
+    mp = MapPair(pathPoints = pathVVV, \
+                     nearestNeighbor=nneib, pathJoined=pathOut)
     mp.doInterpolation()
     mp.writeJoined()
