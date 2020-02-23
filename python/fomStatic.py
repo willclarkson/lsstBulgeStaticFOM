@@ -322,7 +322,7 @@ def TestSel(filtr='r', nside=64):
 def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
                        nightMaxCrowd=365, nightMaxPropm=1e4, \
                        filtersCrowd = ['g', 'r', 'i', 'z', 'y'], \
-                       cleanTmpDir=False, tmpDir='./tmpMetrics', \
+                       cleanTmpDir=True, tmpDir='./tmpMetrics', \
                        buildPathJoined = True, \
                        Verbose=True):
 
