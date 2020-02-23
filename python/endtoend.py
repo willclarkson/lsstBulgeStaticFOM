@@ -42,5 +42,5 @@ def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
         return
 
     # 3. Now that the two tables are merged, compute the figure of merit
-    calcFOM.testFindFom(0, 0.5, pathInterpol)
+    calcFOM.testFindFom(-4, 0.8, pathInterpol)
     
