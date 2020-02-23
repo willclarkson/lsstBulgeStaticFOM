@@ -400,7 +400,7 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
     sP = singleMetric(metrics=[metricPropmI], nightMax=nightMaxPropm, \
                           NSIDE=nside, dbFil=dbFil, \
                           getFilterFromMetric=False, \
-                          filters=[filterPropmI], \
+                          filters=filterPropmI, \
                           dirOut=dirTmp):
 
     # ensure the same output tmp directory is used as for the sM
