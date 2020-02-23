@@ -477,6 +477,9 @@ def removeExtraFiles(dirTop='DUMMY', lTails = ['.fits', '.db'], \
     do anything if the directory to check has fewer than 4
     characters (like ./, ../) )"""
 
+    print("INFO - cleaning intermediate products")
+    print(dirTop, os.access(dirTop, os.W_OK)))
+
     # directory must actually be accessible
     if not os.access(dirTop, os.W_OK):
         return
