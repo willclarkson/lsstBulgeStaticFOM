@@ -277,11 +277,21 @@ meet the selection criteria"""
         
 # =====
 
-def testFindFom(magSurplus=0, pmMax=0.5):
+def testFindFom(magSurplus=0, pmMax=0.5, \
+                    pathJoined='TEST_interp_joined.fits', \
+                    summFil='DUMMY.lis'):
 
     """Tests the various stages of the comparison"""
 
-    pathJoined  = 'TEST_interp_joined.fits'
+    if not os.access(pathJoined):
+        print("calcFOM.testFindFom WARN - path not readable: %s" \
+                  % (pathJoined))
+
+        return
+
+    # prepare the summary file name out of the input file name
+    summFil = 'SUMMARY_%s.txt' % (pathJoined.split('.fits')[0])
+
     fC = fomCalc(pathJoined, magSurplus=magSurplus, pmMax=pmMax)
 
     # for the moment, let's just output
@@ -289,7 +299,23 @@ def testFindFom(magSurplus=0, pmMax=0.5):
 
     if len(fC.tJoined) < 1:
         return
+
+    # dump the summary statistics to disk for now
+    with open(summFil, 'w') as wObj:
+        wObj.write('# Summary statistics: %s\n' % (pathJoined))
+        wObj.write('# magSurplus=%.2f, pmMax=%.2f\n' \
+                       % (magSurplus, pmMax))
+        wObj.write('#\n')
+        wObj.write("INFO: RAW: %.2f, %.2f, %i, %.2e \n" \
+          % (fC.s_l, fC.s_b, fC.nGood, fC.fomRaw))
+        wObj.write("INFO: IDEAL: %.2f, %.2f, %i, %.2e\n" \
+                       % (np.std(fC.tRes['l']), np.std(fC.tRes['b']), \
+                              len(fC.tJoined), fC.fomIdeal))
+
+        wObj.write("INFO: RATIO: %.2e" % (fC.fom))
     
+        
+
     print("INFO: RAW: %.2f, %.2f, %i, %.2e" \
           % (fC.s_l, fC.s_b, fC.nGood, fC.fomRaw))
 

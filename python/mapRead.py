@@ -396,3 +396,48 @@ def testPair(nneib=False, fullVVV=False):
                      nearestNeighbor=nneib, pathJoined=pathOut)
     mp.doInterpolation()
     mp.writeJoined()
+
+def TestInterpMAF(pathMSTO='lb_MSTO_ugriz.fits', \
+                      pathMAF='DUMMY', \
+                      nneib=False):
+
+    """Interpolates the MAF evaluations onto the positions in the MSTO
+    map Returns the path to the interpolated file.
+
+    nneib -- use nearest-neighbor interpolation? (Default is bilinear)."""
+
+    # Again, build the success/fail paths to return
+    pathFail = 'DUMMY'
+    pathSuccess = 'MERGED_%s' % (pathMAF)
+    if nneib:
+        pathSuccess = 'MERGED_NNEIB_%s' % (pathMAF)
+
+    if not os.access(pathMSTO, os.R_OK):
+        print("mapRead.TestInterpMAF WARN - cannot read MSTO path %s" \
+                  % (pathMSTO))
+        return pathFail
+
+    if not os.access(pathMAF, os.R_OK):
+        print("mapRead.TestInterpMAF WARN - cannot read MAF path %s" \
+                  % (pathMAF))
+
+        return pathFail
+
+    # ensure we don't accidentally pick up an older analysis
+    if os.access(pathSuccess, os.W_OK):
+        os.remove(pathSuccess)
+
+    # ok now actually do the operations...
+    mp = MapPair(pathMSTO=pathMSTO[:], pathMAF=pathMAF[:], \
+                     nneib=nneib, \
+                     pathJoined = pathSuccess)
+    
+    mp.doInterpolation()
+    mp.writeJoined()
+
+    # return the "success" path if that actually produced the output
+    # we need.
+    if os.access(pathSuccess, os.R_OK):
+        return pathSuccess
+
+    return pathFail

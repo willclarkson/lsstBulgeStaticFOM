@@ -22,7 +22,7 @@
 # implement a diverse set of metrics in a single bundle.)
 
 
-import os
+import os, glob
 import numpy as np
 from astropy.table import Table, join
 from astropy import units as u
@@ -312,18 +312,56 @@ def TestSel(filtr='r', nside=64):
     #metric = metrics.CrowdingM5Metric(crowding_error=0.05,filtername='%s' % (filtr))
 
     sM = singleMetric(metrics=[metric])
-    print(sM.sql)
+    # print(sM.sql)
 
     sM.setupBundleDict()
     sM.setupGroupAndRun()
     sM.translateResultsToArrays()
 
 
-def TestFewMetrics(nside=128, nightMaxCrowd=365, nightMaxPropm=1e4, \
-                   dbFil='baseline_v1.4_10yrs.db'):
+def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
+                       nightMaxCrowd=365, nightMaxPropm=1e4, \
+                       filtersCrowd = ['g', 'r', 'i', 'z', 'y'], \
+                       cleanTmpDir=False, tmpDir='./tmpMetrics', \
+                       buildPathJoined = True, \
+                       Verbose=True):
 
     """Test routine to test a few metrics with different
-    selections."""
+    selections. Returns the path to the joined metric file. 
+
+    dbfil -- OPSIM database file to assess metrics
+
+    nside -- HEALPIX resolution (2020-02-23: nside > 128 nonstandard in MAF)
+
+    nightMaxCrowd -- maximum obsdate for the crowding metrics
+
+    nighMaxPropm -- maximum obsdate for the proper motion metric
+
+    filtersCrowd -- list of filters for which to perform the crowding checks
+
+    cleanTmpDir -- remove intermediate results
+
+    tmpDir -- directory to hold intermediate products
+
+    buildPathJoined -- construct path for joined-metrics from the
+    database filename
+
+    Verbose -- provide 'informative' terminal output"""
+
+    # Path to return (to the joined MAF outcomes. One for success, one
+    # for failure.) Do the path building up-front so that it can be
+    # easily tested without waiting for evaluation of everything
+    # else.
+    pathFail = 'NONE'
+    pathSuccess = 'tmp_joined.fits'
+    if buildPathJoined:
+        pathSuccess = 'METRICS_%s.fits' % (dbFil.split('.db')[0])
+
+    # Is the opsim database file accessible?
+    if not os.access(dbFil, os.R_OK):
+        print("fomStatic.TestFewMetrics WARN - dbfile not accessible: %s" \
+                  % (dbFil))
+        return pathFail
 
     # use the same dbfile throughout
     # dbFil='baseline_v1.4_10yrs.db'
@@ -332,14 +370,9 @@ def TestFewMetrics(nside=128, nightMaxCrowd=365, nightMaxPropm=1e4, \
     listMetrics = []
 
     if nside < 64:
-        print("TestFewMetrics WARN - maps won't work for nside < 64")
-        return
-    
-    # For the moment, let's just pass these in
-    filtersCrowd = ['r']
-
-    filtersCrowd = ['u','g','r','i','z','y']
-    
+        print("fomStatic.TestFewMetrics WARN - maps won't work for nside < 64")
+        return pathFail
+        
     for filt in filtersCrowd:
 #        metricThis = metrics.CrowdingM5Metric(crowding_error=0.05, \
 #                                                  filtername=filt)
@@ -351,7 +384,8 @@ def TestFewMetrics(nside=128, nightMaxCrowd=365, nightMaxPropm=1e4, \
         sM = singleMetric(metrics=[metricThis], \
                               nightMax=nightMaxCrowd, \
                               NSIDE=nside, dbFil=dbFil, \
-                              getFilterFromMetric=True)
+                              getFilterFromMetric=True, \
+                              dirOut=tmpDir[:])
     
         sM.setupBundleDict()
         sM.setupGroupAndRun()
@@ -360,14 +394,18 @@ def TestFewMetrics(nside=128, nightMaxCrowd=365, nightMaxPropm=1e4, \
         listMetrics.append(sM)
 
     # Now do the proper motion metric
-
     metricPropmI = metrics.ProperMotionMetric()
     filterPropmI = 'i'
 
     sP = singleMetric(metrics=[metricPropmI], nightMax=nightMaxPropm, \
                           NSIDE=nside, dbFil=dbFil, \
                           getFilterFromMetric=False, \
-                          filters=[filterPropmI])
+                          filters=[filterPropmI], \
+                          dirOut=dirTmp):
+
+    # ensure the same output tmp directory is used as for the sM
+    # object
+    sP.dirOut = sM.dirOut[:]
 
     sP.setupBundleDict()
     sP.setupGroupAndRun()
@@ -380,8 +418,36 @@ def TestFewMetrics(nside=128, nightMaxCrowd=365, nightMaxPropm=1e4, \
     for metricObj in listMetrics:
         listOutPaths.append(metricObj.pathsOut[0])
 
+    # remove any old instances of pathSuccess - we don't want to
+    # accidentally pick up a prior analysis here.
+    if os.access(pathSuccess, os.R_OK):
+        os.remove(pathSuccess)
+        
     # now join the tables together
-    mergeTables(listOutPaths)
+    mergeTables(listOutPaths, pathJoined=pathSuccess[:])
+
+    # if asked, remove the contents of the temporary directory. To be
+    # safe, refuse to do this if the tmpdir has fewer than 3
+    # characters (e.g. if the user is trying to erase the contents of
+    # "./").
+    if cleanTmpDir:
+
+        # since we've specified in this method the tempdir to use, we
+        # could just pass the same variable in here. I prefer to use
+        # the tmpdir actually used, though...
+        dirIntermed = sM.dirOut[:]
+        
+        # all the housekeeping, safety checks, etc., are ported to a
+        # separate method below.
+        removeExtraFiles(dirIntermed, ['.fits', 'db'], \
+                             safetyCheck=True)
+
+    # if we've got here, return the path to the output file
+    pathRet = pathFail[:]
+    if os.access(pathSuccess, os.R_OK):
+        pathRet = pathSuccess[:]
+
+    return pathRet
 
 def mergeTables(paths=[], pathJoined='./TEST_joined.fits'):
 
@@ -401,4 +467,35 @@ def mergeTables(paths=[], pathJoined='./TEST_joined.fits'):
 
     # write the joined table to disk
     tJoined.write(pathJoined, overwrite=True)
+        
+def removeExtraFiles(dirTop='DUMMY', lTails = ['.fits', '.db'], \
+                         safetyCheck=True):
+
+    """From dirTop, removes files that end in lTails entries. 
+
+    safetyCheck = perform some conservative safety checks (e.g. don't
+    do anything if the directory to check has fewer than 4
+    characters (like ./, ../) )"""
+
+    # directory must actually be accessible
+    if not os.access(dirTop, os.W_OK):
+        return
+
+    # safety check?
+    if safetyCheck:
+        if len(dirTop) < 4:
+            return
+
+    # lTails must actually be a list. We don't want to iterate through
+    # all the characters in a string.
+    if not isinstance(lTails, list):
+        return
+
+    for sTail in lTails:
+        lJunk = glob.glob('%s/*%s' % (dirTop, sTail))
+        if len(lJunk) < 1:
+            continue
+
+        for thisPath in lJunk:
+            os.remove(thisPath)
         
