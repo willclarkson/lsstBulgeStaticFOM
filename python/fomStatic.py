@@ -478,7 +478,7 @@ def removeExtraFiles(dirTop='DUMMY', lTails = ['.fits', '.db'], \
     characters (like ./, ../) )"""
 
     print("INFO - cleaning intermediate products")
-    print(dirTop, os.access(dirTop, os.W_OK)))
+    print(dirTop, os.access(dirTop, os.W_OK))
 
     # directory must actually be accessible
     if not os.access(dirTop, os.W_OK):
