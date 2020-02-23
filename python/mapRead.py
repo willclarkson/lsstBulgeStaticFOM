@@ -429,7 +429,7 @@ def TestInterpMAF(pathMSTO='lb_MSTO_ugriz.fits', \
 
     # ok now actually do the operations...
     mp = MapPair(pathPoints=pathMSTO[:], pathGrid=pathMAF[:], \
-                     nneib=nneib, \
+                     nearestNeighbor=nneib, \
                      pathJoined = pathSuccess)
     
     mp.doInterpolation()
