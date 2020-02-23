@@ -5,6 +5,8 @@
 # Started 2020-02-23 WIC - wrapper to perform the end-to-end
 # calculation of the figure of merit
 
+import os
+
 # our ingredients
 import fomStatic
 import mapRead
