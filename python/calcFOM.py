@@ -283,7 +283,7 @@ def testFindFom(magSurplus=0, pmMax=0.5, \
 
     """Tests the various stages of the comparison"""
 
-    if not os.access(pathJoined):
+    if not os.access(pathJoined, os.R_OK):
         print("calcFOM.testFindFom WARN - path not readable: %s" \
                   % (pathJoined))
 
