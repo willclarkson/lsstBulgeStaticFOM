@@ -105,7 +105,9 @@ of the comparison)."""
         self.calcFom()
 
         # write the results to file
-        self.writeResults()
+        # 2020-02-23 comented out 
+        #
+        # self.writeResults()
         
     def loadJoined(self):
 
