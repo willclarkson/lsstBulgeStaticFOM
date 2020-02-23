@@ -401,7 +401,7 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
                           NSIDE=nside, dbFil=dbFil, \
                           getFilterFromMetric=False, \
                           filters=[filterPropmI], \
-                          dirOut=dirTmp):
+                          dirOut=tmpDir[:])
 
     # ensure the same output tmp directory is used as for the sM
     # object
