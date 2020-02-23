@@ -428,7 +428,7 @@ def TestInterpMAF(pathMSTO='lb_MSTO_ugriz.fits', \
         os.remove(pathSuccess)
 
     # ok now actually do the operations...
-    mp = MapPair(pathPoints=pathMSTO[:], pathPoints=pathMAF[:], \
+    mp = MapPair(pathPoints=pathMSTO[:], pathGrid=pathMAF[:], \
                      nneib=nneib, \
                      pathJoined = pathSuccess)
     
