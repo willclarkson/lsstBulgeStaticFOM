@@ -439,7 +439,7 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
         
         # all the housekeeping, safety checks, etc., are ported to a
         # separate method below.
-        removeExtraFiles(dirIntermed, ['.fits', 'db'], \
+        removeExtraFiles(dirIntermed, ['.fits', 'db', 'npz'], \
                              safetyCheck=True)
 
     # if we've got here, return the path to the output file
