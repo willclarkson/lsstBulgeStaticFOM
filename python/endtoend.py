@@ -36,8 +36,7 @@ def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
     # 1. Evaluate the LSST MAF crowding and proper motion metrics
     pathMAF = fomStatic.TestFewMetrics(\
         dbFil, nside, nightMaxCrowd, nightMaxPropm, \
-            filtersCrowd=filtersCrowd, \
-            magSurplus=magSurplus, pmMax=pmMax)
+            filtersCrowd=filtersCrowd)
 
     if not os.access(pathMAF, os.R_OK):
         print("endtoend.go FATAL - joined-MAF path not readable: %s" \
@@ -54,5 +53,6 @@ def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
         return
 
     # 3. Now that the two tables are merged, compute the figure of merit
-    calcFOM.testFindFom(-4, 0.8, pathInterpol)
+    calcFOM.testFindFom(-4, 0.8, pathInterpol, magSurplus=magSurplus,\
+                             pmMax=pmMax)
     
