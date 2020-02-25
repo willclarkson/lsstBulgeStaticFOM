@@ -5,12 +5,22 @@
 # Started 2020-02-23 WIC - wrapper to perform the end-to-end
 # calculation of the figure of merit
 
-import os
+import os, glob
 
 # our ingredients
 import fomStatic
 import mapRead
 import calcFOM
+
+def runSeveral():
+
+    """Convenience-wrapper to run on several opsims"""
+
+    # by default, runs on all the .db files in the current working
+    # directory
+    lDb = glob.glob("*1.4*.db")
+    for thisDb in lDb:
+        go(thisDb)
 
 def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
            nightMaxCrowd=365, nightMaxPropm=1e4, \
