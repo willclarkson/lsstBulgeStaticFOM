@@ -15,6 +15,7 @@ import calcFOM
 def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
            nightMaxCrowd=365, nightMaxPropm=1e4, \
            filtersCrowd=['g', 'r', 'i', 'z', 'y'], \
+           magSurplus=1., pmMax=0.8, \
            pathMSTO='lb_MSTO_ugriz.fits'):
 
     """End-to-end run of bulge figure of merit"""
@@ -25,7 +26,8 @@ def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
     # 1. Evaluate the LSST MAF crowding and proper motion metrics
     pathMAF = fomStatic.TestFewMetrics(\
         dbFil, nside, nightMaxCrowd, nightMaxPropm, \
-            filtersCrowd=filtersCrowd)
+            filtersCrowd=filtersCrowd, \
+            magSurplus=magSurplus, pmMax=pmMax)
 
     if not os.access(pathMAF, os.R_OK):
         print("endtoend.go FATAL - joined-MAF path not readable: %s" \
