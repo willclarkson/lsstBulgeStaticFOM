@@ -15,7 +15,7 @@ class fomCalc(object):
 
     def __init__(self, pathJoined='DUMMY', \
                  lFilts=['g','r','i','z','y'], \
-                 magSurplus = -5., \
+                 magSurplus = 1., \
                  pmMax = 0.8, \
                  spatial_bMax = -1.5, \
                  spatial_bMin = -10., \
