@@ -5,7 +5,7 @@ source* on an HP Z840 workstation running **Ubuntu 18.0.4** with **bash**
 as the default shell. The installation steps in the MAF documentation
 *do* work -- and all the steps below come from that documentation --
 but are somewhat sensitive to environment variables; I found that
-following the "when all else fails" suggestion of creating a fresh
+following the "when all else fails" suggestion in the documentation, of creating a fresh
 user account was required to get the installation to work. These notes are a
 static record of the steps that worked on my system.
 
@@ -23,7 +23,7 @@ And, if using the sims_maf_contrib:
 setup sims_maf_contrib -t $USER -t sims  
 ```
 
-## Links to instructions ##
+## Links to the documentation ##
 
 Pre-requisites: https://pipelines.lsst.io/install/newinstall.html
 
