@@ -83,8 +83,9 @@ sudo apt-get install \
 
 From here: https://confluence.lsstcorp.org/display/SIM/Catalogs+and+MAF
 
-On my system, this all lives on a large data disk (so that all the
-necessary maps have plenty of space).
+On my system, this all resides on a large data disk (so that all the
+necessary maps have plenty of space). To configure the installation
+for my system:
 
 ```
 mkdir /raid1/soft/lsst_stack  
@@ -93,24 +94,27 @@ cd /raid1/soft/lsst_stack
 cd ~/lsst  
 curl -OL https://raw.githubusercontent.com/lsst/lsst/master/scripts/newinstall.sh  
 bash newinstall.sh -ct  
+```
 
+And then to install:
+
+```
 source ./loadLSST.bash  
 eups distrib install lsst_sims -t sims_w_2020_06  
 curl -sSL https://raw.githubusercontent.com/lsst/shebangtron/master/shebangtron | python  
 ```
 
- 
+Notes:   
 * The "sims_w_2020_06" is the weekly tag I most recently installed (from 2020 Feb 07). When using a different weekly "tag", replace this with the version you actually installed. The tags can be found at the following link; entry ''w.2020.06 '' would be ''sims_w_2020_06'' (i.e. prepend with 'sims_' and replace '.' with '_'): https://github.com/lsst/afw/releases
 
 * As indicated on the confluence and maf page, this took about an hour to install from source, with more than 120 packages installed. In my fresh lsst user account, this ran all the way through without problems. 
 
-### 3. Set up to run sims_maf ###
-
+To set up to run:
 ```
 setup sims_maf -t sims_w_2020_06
 ```
 
-### 4. Bring down the new sims_maf from github and incorporate it ###
+### 3. Bring down the new sims_maf from github and incorporate it ###
 
 ```
 mkdir /raid1/soft/maf_github  
@@ -123,7 +127,7 @@ setup sims_maf -t $USER
 scons  
 ```
 
-### 5. Bring down maf_contrib and incorporate it ###
+### 4. Bring down maf_contrib and incorporate it ###
 
 From here: https://github.com/LSST-nonproject/sims_maf_contrib
 
