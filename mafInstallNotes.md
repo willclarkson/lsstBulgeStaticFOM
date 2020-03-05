@@ -38,14 +38,16 @@ Including maf_contrib: https://github.com/LSST-nonproject/sims_maf_contrib
 ### 1. Set up a dedicated user account on the machine ###
 
 I wasn't able to install from source on my regular user account
-without conflicts, probably due to the various customizations and
-environment variables I use. I also found that the anaconda python on
-my regular account was causing conflicts with sims_maf. 
+without conflicts: even when installing the provided miniconda
+environment, there were some confusing problems with the pre-existing
+anaconda distribution under my main user account. 
 
-As suggested by the documentation, I created a fresh user account for
-use with sims_maf, and ran the steps below logged in to that
-account. When logged in to the fresh account, however, everything ran
-pretty much as advertised on the installation documentation.
+As suggested by the documentation (and unwilling to sift through
+aliases and environment variables to trace the conflict), I created a
+fresh user account for use with sims_maf, and ran the steps below
+logged in to that account. When logged in to the fresh account,
+however, everything ran pretty much as advertised on the installation
+documentation.
 
 Simply switching in the terminal from my personal account to that
 account in the terminal (by **su [my-lsst-account]**) failed to
