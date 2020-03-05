@@ -71,7 +71,7 @@ sudo apt-get install \
     perl-modules \
     rsync \
     zlib1g-dev
-'''
+```
 
 ### 2. Create a directory to hold the lsst stack and install it. ###
 
