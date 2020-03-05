@@ -47,7 +47,8 @@ the installation documentation.
 
 From here: https://pipelines.lsst.io/install/newinstall.html
 
-```sudo apt-get install \
+```
+sudo apt-get install \
     bison \
     ca-certificates \
     cmake \
@@ -69,7 +70,8 @@ From here: https://pipelines.lsst.io/install/newinstall.html
     make \
     perl-modules \
     rsync \
-    zlib1g-dev```
+    zlib1g-dev
+'''
 
 ### 2. Create a directory to hold the lsst stack and install it. ###
 
