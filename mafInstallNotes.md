@@ -89,7 +89,7 @@ curl -OL https://raw.githubusercontent.com/lsst/lsst/master/scripts/newinstall.s
 bash newinstall.sh -ct  
 
 source ./loadLSST.bash  
-eups distrib install lsst_sims -t **sims_w_2020_05**  
+eups distrib install lsst_sims -t sims_w_2020_05  
 curl -sSL https://raw.githubusercontent.com/lsst/shebangtron/master/shebangtron | python  
 ```
 
@@ -100,10 +100,13 @@ curl -sSL https://raw.githubusercontent.com/lsst/shebangtron/master/shebangtron 
 
 ### 3. Set up to run sims_maf ###
 
+```
 setup sims_maf -t **sims_w_2020_05**
+```
 
 ### 4. Bring down the new sims_maf from github and incorporate it ###
 
+```
 mkdir /raid1/soft/maf_github  
 cd /raid1/soft/maf_github  
 git clone git@github.com:lsst/sims_maf.git  
@@ -112,15 +115,18 @@ cd sims_maf
 eups declare -r . -t $USER  
 setup sims_maf -t $USER  
 scons  
+```
 
 ### 5. Bring down maf_contrib and incorporate it ###
 
 From here: https://github.com/LSST-nonproject/sims_maf_contrib
 
+```
 mkdir /raid1/soft/mafcontrib_github  
 cd /raid1/soft/mafcontrib_github  
 git clone  git@github.com:LSST-nonproject/sims_maf_contrib.git  
+
 cd sims_maf_contrib  
 eups declare sims_maf_contrib -r . -t $USER  
 setup sims_maf_contrib -t $USER -t sims  
-
+```
