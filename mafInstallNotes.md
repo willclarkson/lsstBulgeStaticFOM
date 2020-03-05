@@ -38,9 +38,10 @@ Including maf_contrib: https://github.com/LSST-nonproject/sims_maf_contrib
 I wasn't able to install from source on my regular user account
 without conflicts, probably due to the various customizations and
 environment variables I use. I also found that the anaconda python on
-my regular account was causing conflicts with sims_maf. I created a
-new user account for sims_maf and ran the steps logged in as that
-account.  
+my regular account was causing conflicts with sims_maf. 
+
+As suggested by the documentation, I created a new user account for
+sims_maf and ran the steps from that account. 
 
 Simply switching in the terminal from my personal account to that
 account in the terminal (by **su [my-lsst-account]**) failed to
@@ -108,7 +109,7 @@ curl -sSL https://raw.githubusercontent.com/lsst/shebangtron/master/shebangtron 
 Notes:   
 * The "sims_w_2020_06" is the weekly tag I most recently installed (from 2020 Feb 07). When using a different weekly "tag", replace this with the version actually installed. The tags can be found at the following link, but the install tag seems to differ slightly from the tag at the link. For example, entry ''w.2020.06 '' would be ''sims_w_2020_06'' (i.e. prepend with 'sims_' and replace '.' with '_'): https://github.com/lsst/afw/releases
 
-* As indicated on the confluence and maf page, this took about an hour to install from source, with more than 120 packages installed. In my fresh lsst user account, this ran all the way through without problems. 
+* As suggested by the documentation, this took about an hour to install from source, with more than 120 packages installed. In my fresh lsst user account, this ran all the way through without problems. 
 
 To set up to run:
 ```
