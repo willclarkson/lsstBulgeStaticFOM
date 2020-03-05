@@ -80,6 +80,7 @@ From here: https://confluence.lsstcorp.org/display/SIM/Catalogs+and+MAF
 On my system, this all lives on a large data disk (so that all the
 necessary maps have plenty of space).
 
+```
 mkdir /raid1/soft/lsst_stack  
 cd /raid1/soft/lsst_stack  
 
@@ -90,6 +91,8 @@ bash newinstall.sh -ct
 source ./loadLSST.bash  
 eups distrib install lsst_sims -t **sims_w_2020_05**  
 curl -sSL https://raw.githubusercontent.com/lsst/shebangtron/master/shebangtron | python  
+```
+
  
 * The "sims_w_2020_05" is the weekly tag I most recently installed (from 2020 Feb 1). When using a different weekly "tag", replace this with the version you actually installed. The tags can be found here: https://github.com/lsst/afw/releases
 
