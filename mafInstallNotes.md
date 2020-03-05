@@ -123,6 +123,8 @@ This is often required to use recently developed sims_maf updates
 (when I was installing, it was necessary to do this step to use the
 sims_maf crowding metric). 
 
+From here: https://confluence.lsstcorp.org/display/SIM/Catalogs+and+MAF
+
 ```
 mkdir /raid1/soft/maf_github  
 cd /raid1/soft/maf_github  
@@ -135,6 +137,8 @@ scons
 ```
 
 ### 4. Bring down maf_contrib and incorporate it ###
+
+If the maf_contrib material is needed. (I don't think we need any of maf_contrib for **lsstBulgeStaticFOM**.)
 
 From here: https://github.com/LSST-nonproject/sims_maf_contrib
 
