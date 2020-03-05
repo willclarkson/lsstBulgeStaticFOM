@@ -1,11 +1,11 @@
 ## MAF install notes ##
 
-2020-03-04 WIC - I used these steps to successfully install MAF **from
-source** on an HP Z840 workstation running Ubuntu 18.0.4 with **bash**
+2020-03-04 WIC - I used these steps to successfully install MAF *from
+source* on an HP Z840 workstation running Ubuntu 18.0.4 with **bash**
 as the default shell. The installation steps in the MAF documentation
 *do* work -- and all the steps below come from that documentation --
 but are somewhat sensitive to environment variables; I found that
-following the ``when all else fails'' suggestion of creating a fresh
+following the "when all else fails" suggestion of creating a fresh
 user account was required to get the installation to work. These notes are a
 static record of the steps that worked on my system.
 
