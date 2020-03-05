@@ -119,6 +119,10 @@ setup sims_maf -t sims_w_2020_06
 
 ### 3. Bring down the new sims_maf from github and incorporate it ###
 
+This is often required to use recently developed sims_maf updates
+(when I was installing, it was necessary to do this step to use the
+sims_maf crowding metric). 
+
 ```
 mkdir /raid1/soft/maf_github  
 cd /raid1/soft/maf_github  
