@@ -1,13 +1,15 @@
 ## MAF install notes ##
 
-2020-03-04 WIC - I used these steps to successfully install **sims_maf**  *from
-source* on an HP Z840 workstation running **Ubuntu 18.0.4** with **bash**
-as the default shell. The installation steps in the MAF documentation
-*do* work -- and all the steps below come from that documentation --
-but are somewhat sensitive to environment variables; I found that
-following the "when all else fails" suggestion in the documentation, of creating a fresh
-user account was required to get the installation to work. These notes are a
-static record of the steps that worked on my system.
+2020-03-04 WIC - I used these steps to successfully install
+**sims_maf** *from source* on an HP Z840 workstation running **Ubuntu
+18.0.4** with **bash** as the default shell. The installation steps in
+the MAF documentation *do* work -- and all the steps below come from
+that documentation -- but are somewhat sensitive to environment
+variables; I found that I had to create a fresh user account and run
+as that new user to get the installation to work (the "when all else
+fails" suggestion in the documentation).
+
+These notes are a static record of the steps that worked on my system.
 
 ## Incantations to set up sims_maf once installed ##
 
