@@ -1,6 +1,6 @@
 ## MAF install notes ##
 
-2020-03-04 WIC - I used these steps to successfully install
+2020-03-04 WIC - These are the steps I followed to successfully install
 **sims_maf** *from source* on an HP Z840 workstation running **Ubuntu
 18.0.4** with **bash** as the default shell. The installation steps in
 the MAF documentation *do* work -- and all the steps below come from
