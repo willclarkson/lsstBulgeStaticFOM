@@ -40,8 +40,8 @@ without conflicts, probably due to the various customizations and
 environment variables I use. I also found that the anaconda python on
 my regular account was causing conflicts with sims_maf. 
 
-As suggested by the documentation, I created a new user account for
-sims_maf and ran the steps from that account. 
+As suggested by the documentation, I created a fresh user account for
+use with sims_maf, and ran the steps below logged in to that account.
 
 Simply switching in the terminal from my personal account to that
 account in the terminal (by **su [my-lsst-account]**) failed to
