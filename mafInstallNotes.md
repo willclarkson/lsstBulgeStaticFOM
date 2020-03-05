@@ -42,12 +42,13 @@ my regular account was causing conflicts with sims_maf. I created a
 new user account for sims_maf and ran the steps logged in as that
 account.  
 
-Simply switching to that account in the terminal (by **su
-[my-lsst-account]**) failed to resolve the conflicts: I had to log out
-completely, log back in to the fresh account, and perform the steps
-below (this also applies to the per-session install steps above). When
-logged in to the fresh account, however, everything ran pretty much as
-advertised on the installation documentation.
+Simply switching in the terminal from my personal account to that
+account in the terminal (by **su [my-lsst-account]**) failed to
+resolve the conflicts: I had to log out completely, log back in to the
+fresh account, and perform the steps below (this also applies to the
+per-session install steps above). When logged in to the fresh account,
+however, everything ran pretty much as advertised on the installation
+documentation.
 
 ### 1. Install the pre-requisites ###
 
