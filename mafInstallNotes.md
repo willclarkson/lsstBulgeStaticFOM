@@ -112,7 +112,10 @@ curl -sSL https://raw.githubusercontent.com/lsst/shebangtron/master/shebangtron 
 Notes:   
 * The "sims_w_2020_06" is the weekly tag I most recently installed (from 2020 Feb 07). When using a different weekly "tag", replace this with the version actually installed. The tags can be found at the following link, but the install tag seems to differ slightly from the tag at the link. For example, entry ''w.2020.06 '' would be ''sims_w_2020_06'' (i.e. prepend with 'sims_' and replace '.' with '_'): https://github.com/lsst/afw/releases
 
-* As suggested by the documentation, this took about an hour to install from source, with more than 120 packages installed. In my fresh lsst user account, this ran all the way through without problems. 
+* As suggested by the documentation, this step took about an hour, with more than 120 packages installed. In my fresh lsst user account, this ran all the way through without problems. 
+
+      * ( When trying this in my main user account, this was the step where the
+installation failed.)
 
 To set up to run:
 ```
