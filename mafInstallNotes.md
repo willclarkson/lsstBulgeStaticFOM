@@ -3,18 +3,23 @@
 2020-03-04 WIC - I used these steps to successfully install MAF **from
 source** on an HP Z840 running Ubuntu 18.0.4 with **bash** as the
 default shell. The installation steps in the MAF documentation **do**
-work - and these steps are lightly edited version of that material --
-but are somewhat sensitive to environment variables. These notes are a
-record of the steps that worked for me.
+work - and these steps are taken from the links below -- but are
+somewhat sensitive to environment variables. These notes are a static
+record of the steps that worked on my system.
 
-## Per-session Incantations to set up once installed ##
+## Incantations to set up sims_maf once installed ##
 
+The steps below must be done for each new session (after the one in which the software was installed).
+```
 source /raid1/soft/lsst_stack/loadLSST.bash  
 setup sims_maf -t $USER  
+```
 
 And, if using the sims_maf_contrib:
 
+```
 setup sims_maf_contrib -t $USER -t sims  
+```
 
 ## Links to instructions ##
 
@@ -37,11 +42,12 @@ my regular account was causing conflicts with sims_maf. I created a
 new user account for sims_maf and ran the steps logged in as that
 account.  
 
-Simply switching to that account by **su [my-lsst-account]** failed to
-resolve the conflicts: I had to log out completely, log back in to the
-fresh account, and perform the following steps. When logged in to the
-fresh account, however, everything ran pretty much as advertised on
-the installation documentation.
+Simply switching to that account in the terminal (by **su
+[my-lsst-account]**) failed to resolve the conflicts: I had to log out
+completely, log back in to the fresh account, and perform the steps
+below (this also applies to the per-session install steps above). When
+logged in to the fresh account, however, everything ran pretty much as
+advertised on the installation documentation.
 
 ### 1. Install the pre-requisites ###
 
