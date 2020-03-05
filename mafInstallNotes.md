@@ -35,7 +35,7 @@ Including maf_contrib: https://github.com/LSST-nonproject/sims_maf_contrib
 
 ## Steps ##
 
-### 0. Set up a dedicated user account ###
+### 1. Set up a dedicated user account on the machine ###
 
 I wasn't able to install from source on my regular user account
 without conflicts, probably due to the various customizations and
@@ -53,7 +53,7 @@ resolve the conflicts: I had to log out completely, log back in to the
 fresh account, and perform the steps below (this also applies to the
 per-session install steps above). 
 
-### 1. Install the pre-requisites ###
+### 2. Install the pre-requisites ###
 
 From here: https://pipelines.lsst.io/install/newinstall.html
 
@@ -83,7 +83,7 @@ sudo apt-get install \
     zlib1g-dev
 ```
 
-### 2. Create a directory to hold the lsst stack and install it. ###
+### 3. Create a directory to hold the lsst stack and install it. ###
 
 From here: https://confluence.lsstcorp.org/display/SIM/Catalogs+and+MAF
 
@@ -117,7 +117,7 @@ To set up to run:
 setup sims_maf -t sims_w_2020_06
 ```
 
-### 3. Bring down the new sims_maf from github and incorporate it ###
+### 4. Bring down the new sims_maf from github and incorporate it ###
 
 This is often required to use recently developed sims_maf updates
 (when I was installing, it was necessary to do this step to use the
@@ -136,7 +136,7 @@ setup sims_maf -t $USER
 scons  
 ```
 
-### 4. Bring down maf_contrib and incorporate it ###
+### 5. Bring down maf_contrib and incorporate it ###
 
 If the maf_contrib material is needed. (I don't think we need any of maf_contrib for **lsstBulgeStaticFOM**.)
 
