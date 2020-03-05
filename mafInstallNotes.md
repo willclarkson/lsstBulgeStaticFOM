@@ -9,12 +9,12 @@ record of the steps that worked for me.
 
 ## Per-session Incantations to set up once installed ##
 
-source /raid1/soft/lsst_stack/loadLSST.bash
-setup sims_maf -t $USER
+source /raid1/soft/lsst_stack/loadLSST.bash  
+setup sims_maf -t $USER  
 
 And, if using the sims_maf_contrib:
 
-setup sims_maf_contrib -t $USER -t sims
+setup sims_maf_contrib -t $USER -t sims  
 
 ## Links to instructions ##
 
@@ -35,7 +35,7 @@ without conflicts, probably due to the various customizations and
 environment variables I use. I also found that the anaconda python on
 my regular account was causing conflicts with sims_maf. I created a
 new user account for sims_maf and ran the steps logged in as that
-account.
+account.  
 
 Simply switching to that account by **su [my-lsst-account]** failed to
 resolve the conflicts: I had to log out completely, log back in to the
@@ -78,16 +78,16 @@ From here: https://confluence.lsstcorp.org/display/SIM/Catalogs+and+MAF
 On my system, this all lives on a large data disk (so that all the
 necessary maps have plenty of space).
 
-mkdir /raid1/soft/lsst_stack
-cd /raid1/soft/lsst_stack
+mkdir /raid1/soft/lsst_stack  
+cd /raid1/soft/lsst_stack  
 
-cd ~/lsst
-curl -OL https://raw.githubusercontent.com/lsst/lsst/master/scripts/newinstall.sh
-bash newinstall.sh -ct
+cd ~/lsst  
+curl -OL https://raw.githubusercontent.com/lsst/lsst/master/scripts/newinstall.sh  
+bash newinstall.sh -ct  
 
-source ./loadLSST.bash
-eups distrib install lsst_sims -t **sims_w_2020_05**
-curl -sSL https://raw.githubusercontent.com/lsst/shebangtron/master/shebangtron | python
+source ./loadLSST.bash  
+eups distrib install lsst_sims -t **sims_w_2020_05**  
+curl -sSL https://raw.githubusercontent.com/lsst/shebangtron/master/shebangtron | python  
  
 * The "sims_w_2020_05" is the weekly tag I most recently installed (from 2020 Feb 1). When using a different weekly "tag", replace this with the version you actually installed. The tags can be found here: https://github.com/lsst/afw/releases
 
@@ -99,23 +99,23 @@ setup sims_maf -t **sims_w_2020_05**
 
 ### 4. Bring down the new sims_maf from github and incorporate it ###
 
-mkdir /raid1/soft/maf_github
-cd /raid1/soft/maf_github
-git clone git@github.com:lsst/sims_maf.git
+mkdir /raid1/soft/maf_github  
+cd /raid1/soft/maf_github  
+git clone git@github.com:lsst/sims_maf.git  
 
-cd sims_maf
-eups declare -r . -t $USER
-setup sims_maf -t $USER
-scons
+cd sims_maf  
+eups declare -r . -t $USER  
+setup sims_maf -t $USER  
+scons  
 
 ### 5. Bring down maf_contrib and incorporate it ###
 
 From here: https://github.com/LSST-nonproject/sims_maf_contrib
 
-mkdir /raid1/soft/mafcontrib_github
-cd /raid1/soft/mafcontrib_github
-git clone  git@github.com:LSST-nonproject/sims_maf_contrib.git
-cd sims_maf_contrib
-eups declare sims_maf_contrib -r . -t $USER
-setup sims_maf_contrib -t $USER -t sims
+mkdir /raid1/soft/mafcontrib_github  
+cd /raid1/soft/mafcontrib_github  
+git clone  git@github.com:LSST-nonproject/sims_maf_contrib.git  
+cd sims_maf_contrib  
+eups declare sims_maf_contrib -r . -t $USER  
+setup sims_maf_contrib -t $USER -t sims  
 
