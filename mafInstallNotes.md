@@ -89,19 +89,19 @@ curl -OL https://raw.githubusercontent.com/lsst/lsst/master/scripts/newinstall.s
 bash newinstall.sh -ct  
 
 source ./loadLSST.bash  
-eups distrib install lsst_sims -t sims_w_2020_05  
+eups distrib install lsst_sims -t sims_w_2020_06  
 curl -sSL https://raw.githubusercontent.com/lsst/shebangtron/master/shebangtron | python  
 ```
 
  
-* The "sims_w_2020_05" is the weekly tag I most recently installed (from 2020 Feb 1). When using a different weekly "tag", replace this with the version you actually installed. The tags can be found at the following link; entry ''w.2020.05 '' would be ''sims_w_2020_05'' (i.e. prepend with 'sims_' and replace '.' with '_'): https://github.com/lsst/afw/releases
+* The "sims_w_2020_06" is the weekly tag I most recently installed (from 2020 Feb 07). When using a different weekly "tag", replace this with the version you actually installed. The tags can be found at the following link; entry ''w.2020.06 '' would be ''sims_w_2020_06'' (i.e. prepend with 'sims_' and replace '.' with '_'): https://github.com/lsst/afw/releases
 
-* As indicated on the confluence and maf page, this took about an hour to install from source, with about 150 packages installed. In my fresh lsst user account, this ran all the way through without problems. 
+* As indicated on the confluence and maf page, this took about an hour to install from source, with more than 120 packages installed. In my fresh lsst user account, this ran all the way through without problems. 
 
 ### 3. Set up to run sims_maf ###
 
 ```
-setup sims_maf -t sims_w_2020_05
+setup sims_maf -t sims_w_2020_06
 ```
 
 ### 4. Bring down the new sims_maf from github and incorporate it ###
