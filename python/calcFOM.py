@@ -280,8 +280,7 @@ meet the selection criteria"""
 # =====
 
 def testFindFom(magSurplus=0, pmMax=0.5, \
-                    pathJoined='TEST_interp_joined.fits', \
-                    summFil='DUMMY.lis'):
+                    pathJoined='TEST_interp_joined.fits'):
 
     """Tests the various stages of the comparison"""
 
@@ -292,7 +291,10 @@ def testFindFom(magSurplus=0, pmMax=0.5, \
         return
 
     # prepare the summary file name out of the input file name
-    summFil = 'SUMMARY_%s.txt' % (pathJoined.split('.fits')[0])
+    joinedDir, joinedTail = os.path.split(pathJoined)
+    if len(joinedDir) < 1:
+        joinedDir = '.'
+    summFil = '%s/SUMMARY_%s.txt' % (joinedDir, joinedTail.split('.fits')[0])
 
     fC = fomCalc(pathJoined, magSurplus=magSurplus, pmMax=pmMax)
 
@@ -300,7 +302,7 @@ def testFindFom(magSurplus=0, pmMax=0.5, \
     #fC.tRes.write('TEST_compoMags.fits', overwrite=True)
 
     if len(fC.tJoined) < 1:
-        return
+        return ''
 
     # dump the summary statistics to disk for now
     with open(summFil, 'w') as wObj:
@@ -316,8 +318,7 @@ def testFindFom(magSurplus=0, pmMax=0.5, \
 
         wObj.write("INFO: RATIO: %.2e" % (fC.fom))
     
-        
-
+    
     print("INFO: RAW: %.2f, %.2f, %i, %.2e" \
           % (fC.s_l, fC.s_b, fC.nGood, fC.fomRaw))
 
@@ -327,4 +328,4 @@ def testFindFom(magSurplus=0, pmMax=0.5, \
 
     print("INFO: RATIO: %.2e" % (fC.fom))
 
-  
+    return summFil

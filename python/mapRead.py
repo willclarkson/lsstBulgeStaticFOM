@@ -408,9 +408,13 @@ def TestInterpMAF(pathMSTO='lb_MSTO_ugriz.fits', \
 
     # Again, build the success/fail paths to return
     pathFail = 'DUMMY'
-    pathSuccess = 'MERGED_%s' % (pathMAF)
+    dirMAF, tailMAF = os.path.split(pathMAF)
+    if len(dirMAF) < 2:
+        dirMAF = '.'
+
+    pathSuccess = '%s/MERGED_%s' % (dirMAF, tailMAF)
     if nneib:
-        pathSuccess = 'MERGED_NNEIB_%s' % (pathMAF)
+        pathSuccess = '%s/MERGED_NNEIB_%s' % (dirMAF, tailMAF)
 
     if not os.access(pathMSTO, os.R_OK):
         print("mapRead.TestInterpMAF WARN - cannot read MSTO path %s" \

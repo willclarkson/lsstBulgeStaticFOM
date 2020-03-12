@@ -12,7 +12,7 @@ import fomStatic
 import mapRead
 import calcFOM
 
-def runSeveral():
+def runSeveral(nside=128):
 
     """Convenience-wrapper to run on several opsims"""
 
@@ -20,7 +20,7 @@ def runSeveral():
     # directory
     lDb = glob.glob("*1.4*.db")
     for thisDb in lDb:
-        go(thisDb)
+        go(thisDb, nside=nside)
 
 def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
            nightMaxCrowd=365, nightMaxPropm=1e4, \
@@ -33,10 +33,16 @@ def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
     # At each step in the process, we 'gracefully' fail out if the
     # output path is not readable.
 
+    # 2020-03-12 produce subdirectory for output files
+    dirSub = 'nside%i' % (nside)
+    if not os.access(dirSub, os.R_OK):
+        os.makedirs(dirSub)
+
     # 1. Evaluate the LSST MAF crowding and proper motion metrics
     pathMAF = fomStatic.TestFewMetrics(\
         dbFil, nside, nightMaxCrowd, nightMaxPropm, \
-            filtersCrowd=filtersCrowd)
+            filtersCrowd=filtersCrowd, \
+            dirOut=dirSub[:])
 
     if not os.access(pathMAF, os.R_OK):
         print("endtoend.go FATAL - joined-MAF path not readable: %s" \
@@ -52,6 +58,9 @@ def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
 
         return
 
+    # 
+
     # 3. Now that the two tables are merged, compute the figure of merit
-    calcFOM.testFindFom(magSurplus, pmMax, pathInterpol)
-    
+    thisSumm = calcFOM.testFindFom(magSurplus, pmMax, pathInterpol)
+    print("DONE: %s" % (thisSumm))
+    print("###########################")

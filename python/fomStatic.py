@@ -324,6 +324,7 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
                        filtersCrowd = ['g', 'r', 'i', 'z', 'y'], \
                        cleanTmpDir=True, tmpDir='./tmpMetrics', \
                        buildPathJoined = True, \
+                       dirOut='tmpProds', \
                        Verbose=True):
 
     """Test routine to test a few metrics with different
@@ -346,16 +347,21 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
     buildPathJoined -- construct path for joined-metrics from the
     database filename
 
+    dirOut -- directory for output files
+
     Verbose -- provide 'informative' terminal output"""
 
     # Path to return (to the joined MAF outcomes. One for success, one
     # for failure.) Do the path building up-front so that it can be
     # easily tested without waiting for evaluation of everything
     # else.
+    if not os.access(dirOut, os.R_OK) and len(dirOut) > 2:
+        os.makedirs(dirOut)
+
     pathFail = 'NONE'
-    pathSuccess = 'tmp_joined.fits'
+    pathSuccess = '%s/tmp_joined.fits' % (dirOut)
     if buildPathJoined:
-        pathSuccess = 'METRICS_%s.fits' % (dbFil.split('.db')[0])
+        pathSuccess = '%s/METRICS_%s.fits' % (dirOut, dbFil.split('.db')[0])
 
     # Is the opsim database file accessible?
     if not os.access(dbFil, os.R_OK):
