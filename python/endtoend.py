@@ -57,6 +57,10 @@ def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
                   % (pathMAF))
         return
 
+    if not os.access(pathMSTO, os.R_OK):
+        print("endtoend.go WARN - MSTO path not readable. Not proceeding further.")
+        return
+
     # 2. Interpolate the LSST MAF metrics to the MSTO spatial locations
     pathInterpol = mapRead.TestInterpMAF(pathMSTO, pathMAF, nneib=False)
 
