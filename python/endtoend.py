@@ -12,14 +12,22 @@ import fomStatic
 import mapRead
 import calcFOM
 
-def runSeveral(nside=128):
+def runSeveral(nside=128, nMax=3):
 
     """Convenience-wrapper to run on several opsims"""
 
     # by default, runs on all the .db files in the current working
     # directory
     lDb = glob.glob("*1.4*.db")
-    for thisDb in lDb:
+
+    # how many do we run?
+    if nMax < 0:
+        iMax = len(lDb)
+    else:
+        iMax = min([nMax, len(lDb)])
+
+    for iDb in range(iMax):
+        thisDb = lDb[iDb]
         go(thisDb, nside=nside)
 
 def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
