@@ -5,4 +5,4 @@
 import endtoend
 
 # run three figures of merit at low resolution as a test
-endtoend.runSeveral(32,3)
+endtoend.runSeveral(64,3)
