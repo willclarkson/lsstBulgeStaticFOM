@@ -35,6 +35,19 @@ import lsst.sims.maf.metricBundles as metricBundles
 import lsst.sims.maf.maps as maps
 import lsst.sims.maf.plots as plots
 
+# UPDATE 2020-08-13: when running on sciserver, the updated crowding
+# metrics are available locally. Handle that here.
+blah = None
+try:
+    blah = metrics.NstarsMetric
+except:
+    try:
+        import crowdingMetric
+        blah = crowdingMetric.NstarsMetric
+    except:
+        NO_NSTARS = True
+    
+
 class singleMetric(object):
 
     """Single metric (might be a metric bundle)"""
@@ -46,7 +59,7 @@ class singleMetric(object):
                  metrics=[metrics.CrowdingM5Metric(crowding_error=0.05, filtername='r', maps=['TrilegalDensityMap']) ], \
                  dirOut='testMetric', \
                      Verbose=True, \
-                 getFilterFromMetric=True):
+                 getFilterFromMetric=True, kwargs={}):
 
         # WATCHOUT - this trusts the user to input sensible arguments
         # for the metric. If changing the filter for the crowding map,
@@ -94,7 +107,10 @@ class singleMetric(object):
         self.slicer=None
         self.sql='DUMMY'
         
-
+        # additional keyword arguments to pass to the metric
+        # 2020-08-13 CURRENTLY UNUSED
+        self.kwargs = kwargs
+        
         # operations to run on initialization
         self.checkDbReadable()
         self.buildSelString()
@@ -184,8 +200,10 @@ class singleMetric(object):
             thisName = '%s_%s' % (thisName, filtername)
 
             # If we're not doing the crowding metric, we don't need the maps. This is maybe a bit clunky...
+
+            # 2020-08-13 updated for nstarsmetric
             mapsListUse = mapsList[:]
-            if thisName.find('rowd') < 0:
+            if thisName.find('rowd') < 0 and thisName.find('NstarsMetric') < 0:
                 mapsListUse = []
 
             thisBundle=metricBundles.MetricBundle(thisMetric,self.slicer,self.sql, \
@@ -325,7 +343,8 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
                        cleanTmpDir=True, tmpDir='./tmpMetrics', \
                        buildPathJoined = True, \
                        dirOut='tmpProds', \
-                       Verbose=True):
+                       Verbose=True, \
+                   crowdingUncty=0.05):
 
     """Test routine to test a few metrics with different
     selections. Returns the path to the joined metric file. 
@@ -348,6 +367,8 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
     database filename
 
     dirOut -- directory for output files
+
+    crowdingUncty -- crowding error
 
     Verbose -- provide 'informative' terminal output"""
 
@@ -383,7 +404,7 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
 #        metricThis = metrics.CrowdingM5Metric(crowding_error=0.05, \
 #                                                  filtername=filt)
 
-        metricThis = metrics.CrowdingM5Metric(crowding_error=0.05, \
+        metricThis = metrics.CrowdingM5Metric(crowding_error=crowdingUncty, \
                                               filtername=filt, maps=[])
 
         
@@ -409,6 +430,62 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
                           filters=[filterPropmI], \
                           dirOut=tmpDir[:])
 
+    # Now do the NstarsMetric if we have access to it... This is just
+    # a little awkward:
+    hasNstars = False
+    try:
+        nstarsMetric = metrics.NstarsMetric
+        hasNstars = True
+    except:
+        try:
+            import crowdingMetric
+            nstarsMetric = crowdingMetric.NstarsMetric
+            hasNstars = True
+        except:
+            hasNstars = False
+
+
+    if hasNstars:
+
+        print("fomStatic.TestFewMetrics INFO - trying density metrics")
+        
+        # set up the nstars metric and send to our horrendous wrapper
+        densMetricCrowd = nstarsMetric(maps=['TrilegalDensityMap'], \
+                                       crowding_error=crowdingUncty, \
+                                       ignore_crowding=False)
+
+        densMetricNoCrowd = nstarsMetric(maps=['TrilegalDensityMap'], \
+                                         crowding_error=crowdingUncty, \
+                                         ignore_crowding=True)
+
+        # 2020-08-13 we set up a separate directory for the
+        # non-crowded output just so we can see if we're otherwise
+        # overwriting our output directory
+        dirOutDensCrowd = '%s_crowd' % (SM.dirOut[:])
+        dirOutDensNoCrowd = '%s_noCrowd' % (SM.dirOut[:])
+
+
+        # We'll write this out for the moment...
+        
+        SNcrowd = singleMetric(metrics=[densMetricCrowd], nightMax=nightMaxPropm, \
+                               NSIDE=nside, dbFil=dbfil, \
+                               getFilterFromMetric=False, \
+                               filters=['r'], \
+                               dirOut=dirOutDensCrowd)
+
+        SNnocrowd = singleMetric(metrics=[densMetricNoCrowd], nightMax=nightMaxPropm, \
+                               NSIDE=nside, dbFil=dbfil, \
+                               getFilterFromMetric=False, \
+                               filters=['r'], \
+                                 dirOut=dirOutDensNoCrowd)
+
+        for dens in [SNcrowd, SNnocrowd]:
+            dens.setupBundleDict()
+            dens.setupGroupAndRun()
+            dens.translateResultsToArrays()
+            listMetrics.append(dens)
+        
+        
     # ensure the same output tmp directory is used as for the sM
     # object
     sP.dirOut = sM.dirOut[:]
