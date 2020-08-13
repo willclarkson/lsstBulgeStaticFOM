@@ -438,13 +438,13 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
         # We'll write this out for the moment...
         
         SNcrowd = singleMetric(metrics=[densMetricCrowd], nightMax=nightMaxPropm, \
-                               NSIDE=nside, dbFil=dbfil, \
+                               NSIDE=nside, dbFil=dbFil, \
                                getFilterFromMetric=False, \
                                filters=['r'], \
                                dirOut=dirOutDensCrowd)
 
         SNnocrowd = singleMetric(metrics=[densMetricNoCrowd], nightMax=nightMaxPropm, \
-                               NSIDE=nside, dbFil=dbfil, \
+                               NSIDE=nside, dbFil=dbFil, \
                                getFilterFromMetric=False, \
                                filters=['r'], \
                                  dirOut=dirOutDensNoCrowd)
