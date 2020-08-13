@@ -442,6 +442,10 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
         dirOutDensCrowd = '%s_crowd' % (tmpDir[:])
         dirOutDensNoCrowd = '%s_noCrowd' % (tmpDir[:])
 
+        # 2020-08-13: revert to the same tmpdir as everything else
+        dirOutDensCrowd = tmpDir[:]
+        dirOutDensNoCrowd = tmpDir[:]
+        
         # We'll write this out for the moment...
         
         SNcrowd = singleMetric(metrics=[densMetricCrowd], nightMax=nightMaxPropm, \
