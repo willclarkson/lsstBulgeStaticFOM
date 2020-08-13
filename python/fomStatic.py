@@ -429,6 +429,13 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
                                          crowding_error=crowdingUncty, \
                                          ignore_crowding=True)
 
+        # can we change the metric name?
+        nameNew = '%s_noCrowd' % (densMetricNoCrowd.name[:])
+        densMetricNoCrowd.name = nameNew[:]
+
+        print("fomStatic.TestRunSeveral INFO - noncrowded metric name: %s" \
+              % (densMetricNoCrowd.name))
+        
         # 2020-08-13 we set up a separate directory for the
         # non-crowded output just so we can see if we're otherwise
         # overwriting our output directory
