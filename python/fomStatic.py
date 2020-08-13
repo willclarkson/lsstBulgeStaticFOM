@@ -399,7 +399,62 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
     if nside < 64:
         print("fomStatic.TestFewMetrics WARN - maps won't work for nside < 64")
         return pathFail
+
+
+    ### 2020-08-13 moved the density metric up to here just so that it
+    ### gets tested first!
+    hasNstars = False
+    try:
+        nstarsMetric = metrics.NstarsMetric
+        hasNstars = True
+    except:
+        try:
+            import crowdingMetric
+            nstarsMetric = crowdingMetric.NstarsMetric
+            hasNstars = True
+        except:
+            hasNstars = False
+
+
+    if hasNstars:
+
+        print("fomStatic.TestFewMetrics INFO - trying density metrics")
         
+        # set up the nstars metric and send to our horrendous wrapper
+        densMetricCrowd = nstarsMetric(maps=['TrilegalDensityMap'], \
+                                       crowding_error=crowdingUncty, \
+                                       ignore_crowding=False)
+
+        densMetricNoCrowd = nstarsMetric(maps=['TrilegalDensityMap'], \
+                                         crowding_error=crowdingUncty, \
+                                         ignore_crowding=True)
+
+        # 2020-08-13 we set up a separate directory for the
+        # non-crowded output just so we can see if we're otherwise
+        # overwriting our output directory
+        dirOutDensCrowd = '%s_crowd' % (tmpDir[:])
+        dirOutDensNoCrowd = '%s_noCrowd' % (tmpDir[:])
+
+        # We'll write this out for the moment...
+        
+        SNcrowd = singleMetric(metrics=[densMetricCrowd], nightMax=nightMaxPropm, \
+                               NSIDE=nside, dbFil=dbfil, \
+                               getFilterFromMetric=False, \
+                               filters=['r'], \
+                               dirOut=dirOutDensCrowd)
+
+        SNnocrowd = singleMetric(metrics=[densMetricNoCrowd], nightMax=nightMaxPropm, \
+                               NSIDE=nside, dbFil=dbfil, \
+                               getFilterFromMetric=False, \
+                               filters=['r'], \
+                                 dirOut=dirOutDensNoCrowd)
+
+        for dens in [SNcrowd, SNnocrowd]:
+            dens.setupBundleDict()
+            dens.setupGroupAndRun()
+            dens.translateResultsToArrays()
+            listMetrics.append(dens)
+    
     for filt in filtersCrowd:
 #        metricThis = metrics.CrowdingM5Metric(crowding_error=0.05, \
 #                                                  filtername=filt)
@@ -430,62 +485,6 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
                           filters=[filterPropmI], \
                           dirOut=tmpDir[:])
 
-    # Now do the NstarsMetric if we have access to it... This is just
-    # a little awkward:
-    hasNstars = False
-    try:
-        nstarsMetric = metrics.NstarsMetric
-        hasNstars = True
-    except:
-        try:
-            import crowdingMetric
-            nstarsMetric = crowdingMetric.NstarsMetric
-            hasNstars = True
-        except:
-            hasNstars = False
-
-
-    if hasNstars:
-
-        print("fomStatic.TestFewMetrics INFO - trying density metrics")
-        
-        # set up the nstars metric and send to our horrendous wrapper
-        densMetricCrowd = nstarsMetric(maps=['TrilegalDensityMap'], \
-                                       crowding_error=crowdingUncty, \
-                                       ignore_crowding=False)
-
-        densMetricNoCrowd = nstarsMetric(maps=['TrilegalDensityMap'], \
-                                         crowding_error=crowdingUncty, \
-                                         ignore_crowding=True)
-
-        # 2020-08-13 we set up a separate directory for the
-        # non-crowded output just so we can see if we're otherwise
-        # overwriting our output directory
-        dirOutDensCrowd = '%s_crowd' % (sM.dirOut[:])
-        dirOutDensNoCrowd = '%s_noCrowd' % (sM.dirOut[:])
-
-
-        # We'll write this out for the moment...
-        
-        SNcrowd = singleMetric(metrics=[densMetricCrowd], nightMax=nightMaxPropm, \
-                               NSIDE=nside, dbFil=dbfil, \
-                               getFilterFromMetric=False, \
-                               filters=['r'], \
-                               dirOut=dirOutDensCrowd)
-
-        SNnocrowd = singleMetric(metrics=[densMetricNoCrowd], nightMax=nightMaxPropm, \
-                               NSIDE=nside, dbFil=dbfil, \
-                               getFilterFromMetric=False, \
-                               filters=['r'], \
-                                 dirOut=dirOutDensNoCrowd)
-
-        for dens in [SNcrowd, SNnocrowd]:
-            dens.setupBundleDict()
-            dens.setupGroupAndRun()
-            dens.translateResultsToArrays()
-            listMetrics.append(dens)
-        
-        
     # ensure the same output tmp directory is used as for the sM
     # object
     sP.dirOut = sM.dirOut[:]
