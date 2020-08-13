@@ -1,0 +1,3 @@
+# ignore potentially large fits files
+*.fits
+
