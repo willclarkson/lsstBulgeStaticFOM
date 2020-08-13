@@ -461,8 +461,8 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
         # 2020-08-13 we set up a separate directory for the
         # non-crowded output just so we can see if we're otherwise
         # overwriting our output directory
-        dirOutDensCrowd = '%s_crowd' % (SM.dirOut[:])
-        dirOutDensNoCrowd = '%s_noCrowd' % (SM.dirOut[:])
+        dirOutDensCrowd = '%s_crowd' % (sM.dirOut[:])
+        dirOutDensNoCrowd = '%s_noCrowd' % (sM.dirOut[:])
 
 
         # We'll write this out for the moment...
