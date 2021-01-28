@@ -5,4 +5,4 @@
 import endtoend
 
 # run three figures of merit at low resolution as a test
-endtoend.runSeveral(64,3)
+endtoend.runSeveral(64,3, pathMSTO='./private/lb_MSTO_ugriz.fits.gz')
