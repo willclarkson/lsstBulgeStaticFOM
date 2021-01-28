@@ -300,7 +300,7 @@ class singleMetric(object):
         tRes[metricName] = metricValues
         
         # I don't trust the 'mask' value. make our own boolean
-        # variable. Make our own
+        # variable. 
         tRes['%s_gtr0' % (metricName)] = metricValues > 1e-5
         tRes['%s_finite' % (metricName)] = np.isfinite(metricValues)
         
