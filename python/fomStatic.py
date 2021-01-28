@@ -382,7 +382,12 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
     pathFail = 'NONE'
     pathSuccess = '%s/tmp_joined.fits' % (dirOut)
     if buildPathJoined:
-        pathSuccess = '%s/METRICS_%s.fits' % (dirOut, dbFil.split('.db')[0])
+        
+        # this doesn't want the entire path of the input! Fix here.
+        dbStem = os.path.split(dbFil)[-1].split('db')[0]
+        pathSuccess = '%s/METRICS_%s.fits' % (dirOut, dbStem)
+
+        # pathSuccess = '%s/METRICS_%s.fits' % (dirOut, dbFil.split('.db')[0])
 
     # Is the opsim database file accessible?
     if not os.access(dbFil, os.R_OK):

@@ -74,6 +74,10 @@ def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
     # At each step in the process, we 'gracefully' fail out if the
     # output path is not readable.
 
+    # 2021-01-28 produce screen output since this takes a little while
+    print("endtoend.go INFO - running on opsim %s" \
+              % (os.path.split(dbFil)[-1] ) )
+
     # 2020-03-12 produce subdirectory for output files
     dirSub = 'nside%i' % (nside)
     if not os.access(dirSub, os.R_OK):
