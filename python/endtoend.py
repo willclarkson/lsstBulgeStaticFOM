@@ -15,7 +15,8 @@ import calcFOM
 def runSeveral(nside=128, nMax=3, sciserver=True, \
                    lSims=['baseline_2snaps_v1.5_10yrs.db', \
                               'bulges_cadence_bulge_wfd_v1.5_10yrs.db'], \
-                   filSims='NONE', fileHasFullPaths=True):
+                   filSims='NONE', fileHasFullPaths=True, \
+                   pathMSTO='lb_MSTO_ugriz.fits'):
 
     """Convenience-wrapper to run on several opsims. The
     sciserver=True sets the opsim path appropriately. 
@@ -60,7 +61,7 @@ def runSeveral(nside=128, nMax=3, sciserver=True, \
 
     for iDb in range(iMax):
         thisDb = "%s%s" % (dbroot, lSims[iDb])
-        go(thisDb, nside=nside)
+        go(thisDb, nside=nside, pathMSTO=pathMSTO)
 
 def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
            nightMaxCrowd=365, nightMaxPropm=1e4, \
