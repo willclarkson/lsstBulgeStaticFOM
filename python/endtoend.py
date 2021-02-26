@@ -19,7 +19,8 @@ def runSeveral(nside=128, nMax=3, sciserver=True, \
                    pathMSTO='lb_MSTO_ugriz.fits', \
                    nightMaxCrowd=365, \
                    nightMaxPropm=1e4, \
-                   lfilts=['g', 'r', 'i', 'z', 'y']):
+                   lfilts=['g', 'r', 'i', 'z', 'y'], \
+                   crowdingUncty=0.05):
 
     """Convenience-wrapper to run on several opsims. The
     sciserver=True sets the opsim path appropriately. 
@@ -28,6 +29,8 @@ def runSeveral(nside=128, nMax=3, sciserver=True, \
     input argument lSims, or populate filSims with one line per
     database. If the file has been given, its contents supersede the
     contents of lSims."""
+
+    # crowding uncertainty is now an argument that can be passed in
 
     ## 2021-01-28 update: set the root directory rather than copying
     ## the opsims in here.
@@ -67,13 +70,15 @@ def runSeveral(nside=128, nMax=3, sciserver=True, \
         go(thisDb, nside=nside, pathMSTO=pathMSTO, \
                nightMaxCrowd=nightMaxCrowd, \
                nightMaxPropm=nightMaxPropm, \
-               filtersCrowd=lfilts)
+               filtersCrowd=lfilts, \
+               crowdingUncty=crowdingUncty)
 
 def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
            nightMaxCrowd=365, nightMaxPropm=1e4, \
            filtersCrowd=['g', 'r', 'i', 'z', 'y'], \
            magSurplus=1., pmMax=0.8, \
-           pathMSTO='lb_MSTO_ugriz.fits'):
+           pathMSTO='lb_MSTO_ugriz.fits', \
+           crowdingUncty=0.05):
 
     """End-to-end run of bulge figure of merit"""
 
@@ -85,7 +90,9 @@ def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
               % (os.path.split(dbFil)[-1] ) )
 
     # 2020-03-12 produce subdirectory for output files
-    dirSub = 'nside%i' % (nside)
+    #
+    # 2021-02-26 added the crowding uncertainty to the variable name
+    dirSub = 'nside%i_%.2f' % (nside, crowdingUncty)
     if not os.access(dirSub, os.R_OK):
         os.makedirs(dirSub)
 
@@ -93,7 +100,8 @@ def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
     pathMAF = fomStatic.TestFewMetrics(\
         dbFil, nside, nightMaxCrowd, nightMaxPropm, \
             filtersCrowd=filtersCrowd, \
-            dirOut=dirSub[:])
+            dirOut=dirSub[:], \
+            crowdingUncty=crowdingUncty)
 
     if not os.access(pathMAF, os.R_OK):
         print("endtoend.go FATAL - joined-MAF path not readable: %s" \
