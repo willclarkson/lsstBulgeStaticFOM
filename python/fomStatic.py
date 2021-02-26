@@ -384,8 +384,9 @@ def TestFewMetrics(dbFil='baseline_v1.4_10yrs.db', nside=128, \
     if buildPathJoined:
         
         # this doesn't want the entire path of the input! Fix here.
-        dbStem = os.path.split(dbFil)[-1].split('db')[0]
-        pathSuccess = '%s/METRICS_%s.fits' % (dirOut, dbStem)
+        dbStem = os.path.split(dbFil)[-1].split('.db')[0]
+        pathSuccess = '%s/METRICS_%s_%.2f.fits' \
+            % (dirOut, crowdingUncty, dbStem)
 
         # pathSuccess = '%s/METRICS_%s.fits' % (dirOut, dbFil.split('.db')[0])
 
