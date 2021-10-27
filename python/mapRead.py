@@ -290,13 +290,14 @@ class MapPair(object):
         # approach. This flag sets the option.
         self.nearestNeib = nearestNeighbor
 
-    def findInterpColumn(self, stem='Crowding_to_Precision'):
+    def findInterpColumn(self):
 
         """Finds the first column that has a precision in it"""
 
         self.strStem = 'Crowding_to_Precision_0.05'
         sCheck = 'Crowding_to_Precision_'
         for sCol in self.objPoints.tMap.colnames:
+            print("HERE:", sCol)
             if sCol.find(sCheck) > -1 and \
                     sCol.find('gtr0') < 0 and \
                     sCol.find('finite') < 0:
