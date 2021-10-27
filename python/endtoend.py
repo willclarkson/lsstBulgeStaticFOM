@@ -20,7 +20,8 @@ def runSeveral(nside=128, nMax=3, sciserver=True, \
                    nightMaxCrowd=365, \
                    nightMaxPropm=1e4, \
                    lfilts=['g', 'r', 'i', 'z', 'y'], \
-                   crowdingUncty=0.05):
+                   crowdingUncty=0.05, \
+                   dbroot=''):
 
     """Convenience-wrapper to run on several opsims. The
     sciserver=True sets the opsim path appropriately. 
@@ -34,7 +35,7 @@ def runSeveral(nside=128, nMax=3, sciserver=True, \
 
     ## 2021-01-28 update: set the root directory rather than copying
     ## the opsims in here.
-    if sciserver:
+    if sciserver and len(dbroot) < 1:
         dbroot = '/home/idies/workspace/lsst_cadence/FBS_1.5/'
     else:
         dbroot = '/sims_maf/fbs_1.5/short_exp/'
