@@ -296,7 +296,7 @@ class MapPair(object):
 
         self.strStem = 'Crowding_to_Precision_0.05'
         sCheck = 'Crowding_to_Precision_'
-        for sCol in self.objPoints.tMap.colnames:
+        for sCol in self.objGrid.tMap.colnames:
             print("HERE:", sCol)
             if sCol.find(sCheck) > -1 and \
                     sCol.find('gtr0') < 0 and \
