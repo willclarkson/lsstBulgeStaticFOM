@@ -277,7 +277,10 @@ class MapPair(object):
 
         self.filters = ['u', 'g', 'r', 'i', 'z', 'y']
         self.strStem = 'Crowding_to_Precision_0.05_'
+        self.findInterpColumn()
         self.buildCols2interp()
+
+        print("INFO: columns to interpolate:", self.col2interp)
 
         # colname string extension used to determine mask for the grid
         self.strFinite = '_finite'
@@ -286,6 +289,20 @@ class MapPair(object):
         # for debugging, it may be useful to use a nearest-neighbor
         # approach. This flag sets the option.
         self.nearestNeib = nearestNeighbor
+
+    def findInterpColumn(self, stem='Crowding_to_Precision'):
+
+        """Finds the first column that has a precision in it"""
+
+        self.strStem = 'Crowding_to_Precision_0.05'
+        sCheck = 'Crowding_to_Precision'
+        for sCol in self.objPoints.tMap.colnames:
+            if sCol.find(sCheck) > -1 and \
+                    sCol.find('gtr0') < 0 and \
+                    sCol.find('finite') < 0:
+                self.strStem=sCol[0:-1]
+                break
+
 
     def buildCols2interp(self):
 
