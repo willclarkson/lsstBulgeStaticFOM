@@ -295,12 +295,13 @@ class MapPair(object):
         """Finds the first column that has a precision in it"""
 
         self.strStem = 'Crowding_to_Precision_0.05'
-        sCheck = 'Crowding_to_Precision'
+        sCheck = 'Crowding_to_Precision_'
         for sCol in self.objPoints.tMap.colnames:
             if sCol.find(sCheck) > -1 and \
                     sCol.find('gtr0') < 0 and \
                     sCol.find('finite') < 0:
                 self.strStem=sCol[0:-1]
+                print(sCol, self.strStem)
                 break
 
 
