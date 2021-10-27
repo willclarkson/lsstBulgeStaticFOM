@@ -282,7 +282,7 @@ meet the selection criteria"""
 
 def testFindFom(magSurplus=0, pmMax=0.5, \
                     pathJoined='TEST_interp_joined.fits', \
-                    crowdingUncty=crowdingUncty):
+                    crowdingUncty=0.05):
 
     """Tests the various stages of the comparison"""
 
