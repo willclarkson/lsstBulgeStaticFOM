@@ -280,7 +280,7 @@ class MapPair(object):
         self.findInterpColumn()
         self.buildCols2interp()
 
-        print("INFO: columns to interpolate:", self.col2interp)
+        print("INFO: columns to interpolate:", self.cols2interp)
 
         # colname string extension used to determine mask for the grid
         self.strFinite = '_finite'
