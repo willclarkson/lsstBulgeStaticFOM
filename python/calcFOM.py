@@ -281,7 +281,8 @@ meet the selection criteria"""
 # =====
 
 def testFindFom(magSurplus=0, pmMax=0.5, \
-                    pathJoined='TEST_interp_joined.fits'):
+                    pathJoined='TEST_interp_joined.fits', \
+                    crowdingUncty=crowdingUncty):
 
     """Tests the various stages of the comparison"""
 
@@ -297,7 +298,8 @@ def testFindFom(magSurplus=0, pmMax=0.5, \
         joinedDir = '.'
     summFil = '%s/SUMMARY_%s.txt' % (joinedDir, joinedTail.split('.fits')[0])
 
-    fC = fomCalc(pathJoined, magSurplus=magSurplus, pmMax=pmMax)
+    fC = fomCalc(pathJoined, magSurplus=magSurplus, pmMax=pmMax, \
+                     crowdingUncty=crowdingUncty)
 
     # for the moment, let's just output
     #fC.tRes.write('TEST_compoMags.fits', overwrite=True)
