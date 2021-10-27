@@ -35,10 +35,11 @@ def runSeveral(nside=128, nMax=3, sciserver=True, \
 
     ## 2021-01-28 update: set the root directory rather than copying
     ## the opsims in here.
-    if sciserver and len(dbroot) < 2:
-        dbroot = '/home/idies/workspace/lsst_cadence/FBS_1.5/'
-    else:
-        dbroot = '/sims_maf/fbs_1.5/short_exp/'
+    if len(dbroot) < 2:
+        if sciserver:
+            dbroot = '/home/idies/workspace/lsst_cadence/FBS_1.5/'
+        else:
+            dbroot = '/sims_maf/fbs_1.5/short_exp/'
 
     # 2021-01-28 WIC: There are so many opsims that it's not
     # immediately clear to me how pass the inputs in correctly. I
