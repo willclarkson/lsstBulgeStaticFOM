@@ -124,6 +124,7 @@ def go(dbFil='baseline_v1.4_10yrs.db', nside=128, \
     # 
 
     # 3. Now that the two tables are merged, compute the figure of merit
-    thisSumm = calcFOM.testFindFom(magSurplus, pmMax, pathInterpol)
+    thisSumm = calcFOM.testFindFom(magSurplus, pmMax, pathInterpol, \
+                                       crowdingUncty=crowdingUncty)
     print("DONE: %s" % (thisSumm))
     print("###########################")

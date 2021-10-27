@@ -19,6 +19,7 @@ class fomCalc(object):
                  pmMax = 0.8, \
                  spatial_bMax = -1.5, \
                  spatial_bMin = -10., \
+                 crowdingUncty=0.05, \
                  Verbose=True):
 
         """Performs the comparison for the 'MAF' evaluations. Expects a map
@@ -37,7 +38,7 @@ of the comparison)."""
         self.tJoined = Table()
 
         # String stems for the various pieces
-        self.stemCrowd = 'Crowding_to_Precision_0.05_'
+        self.stemCrowd = 'Crowding_to_Precision_%.2f_' % (crowdingUncty)
         self.stemMSTO = 'msto_'
         self.colPM = 'properMotion_i'
 
