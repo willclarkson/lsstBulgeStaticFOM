@@ -68,6 +68,7 @@ def runSeveral(nside=128, nMax=3, sciserver=True, \
 
     for iDb in range(iMax):
         thisDb = "%s%s" % (dbroot, lSims[iDb])
+        print("#### Sim path:", thisDb)
         go(thisDb, nside=nside, pathMSTO=pathMSTO, \
                nightMaxCrowd=nightMaxCrowd, \
                nightMaxPropm=nightMaxPropm, \
